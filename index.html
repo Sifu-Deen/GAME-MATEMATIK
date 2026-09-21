@@ -1,0 +1,2434 @@
+<!DOCTYPE html>
+<html lang="ms" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Misi Wira Matematik – Tambah & Tolak Bentuk Lazim</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Fredoka for playful kids theme -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#10B981',
+                        accent: '#F59E0B',
+                        danger: '#EF4444',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .pop-animation {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .shake-animation {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .strike-red {
+            position: relative;
+            display: inline-block;
+        }
+        .strike-red::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 14px;
+            height: 2px;
+            background-color: #EF4444;
+            transform: translate(-50%, -50%) rotate(-15deg);
+        }
+
+        .patch-box-top-styled {
+            background-color: transparent !important;
+            border: 2px solid #38bdf8 !important;
+            color: #fbbf24 !important;
+            width: 1.5rem !important;
+            height: 1.5rem !important;
+            font-size: 0.7rem !important;
+            margin: 0 auto !important;
+        }
+
+        .patch-box-bottom-styled {
+            background-color: #3b0764 !important;
+            border: 2px solid #eab308 !important;
+            color: #ffffff !important;
+        }
+
+        .keypad-num-btn {
+            background: linear-gradient(to bottom, #3b82f6, #1d4ed8);
+            border: 1px solid #60a5fa;
+            border-bottom-width: 3px;
+            border-bottom-color: #1e40af;
+            box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.25);
+            transition: transform 0.08s ease, filter 0.08s ease;
+        }
+        .keypad-num-btn:hover {
+            filter: brightness(1.1);
+        }
+        .keypad-num-btn:active, .keypad-num-btn.pressed {
+            transform: translateY(2px) scale(0.96);
+            border-bottom-width: 1px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .keypad-del-btn {
+            background: linear-gradient(to bottom, #ef4444, #b91c1c);
+            border: 1px solid #f87171;
+            border-bottom-width: 3px;
+            border-bottom-color: #991b1b;
+            box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.25);
+            transition: transform 0.08s ease, filter 0.08s ease;
+        }
+        .keypad-del-btn:hover {
+            filter: brightness(1.1);
+        }
+        .keypad-del-btn:active, .keypad-del-btn.pressed {
+            transform: translateY(2px) scale(0.96);
+            border-bottom-width: 1px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .keypad-ok-btn {
+            background: linear-gradient(to bottom, #10b981, #047857);
+            border: 1px solid #34d399;
+            border-bottom-width: 3px;
+            border-bottom-color: #065f46;
+            box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.25);
+            transition: transform 0.08s ease, filter 0.08s ease;
+        }
+        .keypad-ok-btn:hover {
+            filter: brightness(1.1);
+        }
+        .keypad-ok-btn:active, .keypad-ok-btn.pressed {
+            transform: translateY(2px) scale(0.96);
+            border-bottom-width: 1px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
+        }
+        .floating-elem {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+        .floating-elem-delay {
+            animation: floatSlow 5s ease-in-out infinite 1.5s;
+        }
+        @keyframes shimmerGlow {
+            0%, 100% { filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.6)); }
+            50% { filter: drop-shadow(0 0 22px rgba(99, 102, 241, 0.9)); }
+        }
+        .shimmer-title {
+            animation: shimmerGlow 3s ease-in-out infinite;
+        }
+        .crossed-out {
+            position: relative;
+            opacity: 0.45;
+        }
+        .crossed-out::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 3.5px;
+            background-color: #ef4444;
+            transform: rotate(-45deg);
+            box-shadow: 0 0 4px rgba(239, 68, 68, 0.9);
+        }
+    
+        .borrow-used-strike { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: #ef4444; }
+        .borrow-auto-filled { pointer-events: none; }
+
+        /* Animasi gelaran Wira masa depan: mula WIRA PERKASA dan seterusnya */
+        @keyframes wiraFutureBlink {
+            0%, 100% { opacity: 0.48; text-shadow: 0 0 0 rgba(34,211,238,0); }
+            50% { opacity: 1; text-shadow: 0 0 8px rgba(34,211,238,0.9), 0 0 14px rgba(129,140,248,0.55); }
+        }
+        .wira-future-blink {
+            animation: wiraFutureBlink 1.35s ease-in-out infinite;
+        }
+    </style>
+
+<style id="cfu-deen-credit-style">
+.cfu-credit {
+  margin: 10px auto 2px;
+  text-align: center;
+  padding: 8px 8px 2px;
+  max-width: 680px;
+  opacity: .96;
+}
+.cfu-credit-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 1.5px;
+  font-size: 15px;
+  background: linear-gradient(90deg,#f59e0b,#fde68a,#f59e0b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 12px rgba(245,158,11,.25);
+}
+.cfu-credit-name {
+  display: inline-block;
+  margin-top: 5px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 2px;
+  font-size: 20px;
+  color: #f8fafc;
+  text-shadow: 0 0 10px rgba(255,255,255,.25), 0 2px 0 rgba(0,0,0,.35);
+}
+.cfu-credit-sub {
+  font-style: italic;
+  font-size: 8.5px;
+  margin-top: 6px;
+  letter-spacing: .7px;
+  color: rgba(226,232,240,.72);
+}
+.cfu-credit-line {
+  width: 120px;
+  height: 1px;
+  margin: 9px auto 0;
+  background: linear-gradient(90deg, transparent, rgba(245,158,11,.8), transparent);
+}
+</style>
+
+</head>
+<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-sky-950 text-slate-100 h-[100dvh] flex flex-col items-center justify-center p-1 sm:p-3 overflow-hidden">
+
+    <!-- MAIN GAME CONTAINER -->
+    <div id="game-container" class="w-full max-w-md bg-slate-900/95 backdrop-blur-md rounded-3xl shadow-2xl border-4 border-indigo-400/40 flex flex-col overflow-hidden relative h-full max-h-[100dvh] sm:max-h-[96vh]">
+        
+        <!-- HEADER NAV -->
+        <header id="game-header" class="bg-slate-950/85 px-3 py-2 border-b border-indigo-500/30 flex items-center justify-between shrink-0 hidden">
+<div id="header-stats" class="ml-auto flex items-center space-x-2.5 text-xs font-bold">
+                <span id="stat-score" class="text-accent">⭐ 0</span>
+                <span id="stat-streak" class="text-orange-400">🔥 0</span>
+                <span id="stat-lives" class="text-danger">❤️❤️❤️</span>
+                 <span id="stat-coins" class="text-amber-300">🪙 0</span>
+                <button onclick="confirmGoHome()" aria-label="Menu" title="Menu" class="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:via-blue-500 hover:to-indigo-500 text-white font-display text-xs px-3 py-2 rounded-xl font-extrabold border border-cyan-300/50 shadow-[0_0_14px_rgba(34,211,238,0.45)] transition transform hover:scale-[1.02] active:scale-95">🏠 MENU</button>
+            </div>
+        </header>
+
+        <!-- DYNAMIC VIEW AREA -->
+        <main id="app-view" class="flex-1 overflow-y-auto p-2.5 sm:p-4 flex flex-col justify-between relative">
+        </main>
+    </div>
+
+    <!-- NOTIFICATION POPUP MODAL -->
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div id="modal-box" class="bg-slate-900 border-2 border-indigo-500 rounded-3xl p-5 max-w-xs w-full text-center pop-animation shadow-2xl">
+            <div id="modal-icon" class="text-4xl mb-2">🎉</div>
+            <h3 id="modal-title" class="font-display text-lg font-bold text-white mb-1">Tajuk Mesej</h3>
+            <p id="modal-message" class="text-xs sm:text-sm text-slate-300 mb-5">Mesej kandungan di sini.</p>
+            <div id="modal-buttons" class="flex gap-2 justify-center">
+                <button onclick="closeModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-2xl font-bold transition w-full shadow-lg text-xs">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SAVE_KEY = 'misi_wira_matematik_lazim_combined_v5';
+        
+        let gameState = {
+            score: 0,
+            streak: 0,
+            maxStreak: 0,
+            correctCount: 0,
+            wrongCount: 0,
+            lives: 3,
+            coins: 0,
+            xp: 0,
+            level: 1,
+            achievements: { firstMission: false, streak5: false, correct10: false, levelUp: false },
+            progressByYear: {},
+            soundEnabled: true,
+            rewards: {
+                pejuangTambah: false,
+                masterCarry: false,
+                wiraMatematik: false,
+                masterLazim: false
+            }
+        };
+
+        let currentYear = 1;
+        let currentOperation = 'tambah';
+        let currentLevel = 1;
+        let questionLimit = 10;
+        let currentQuestionIdx = 0;
+        let activeQuestionData = null;
+        let activeInputCell = null;
+
+        const visualIcons = ['🍎', '🍌', '⭐', '🐱', '🐶', '🚗', '🎈', '🐟', '⚽', '🍬', '🍉', '🍦', '🚀', '🐢'];
+
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playNumberClickSound() {
+            if (!gameState.soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(580, now);
+                osc.frequency.exponentialRampToValueAtTime(320, now + 0.08);
+                
+                gain.gain.setValueAtTime(0.16, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+                
+                osc.start(now);
+                osc.stop(now + 0.09);
+            } catch(e) {}
+        }
+
+        function playDeleteSound() {
+            if (!gameState.soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(240, now);
+                osc.frequency.exponentialRampToValueAtTime(140, now + 0.05);
+                
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+                
+                osc.start(now);
+                osc.stop(now + 0.06);
+            } catch(e) {}
+        }
+
+        function playCorrectSound() {
+            if (!gameState.soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+                const now = audioCtx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((f, idx) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g); g.connect(audioCtx.destination);
+                    o.type = 'triangle';
+                    o.frequency.setValueAtTime(f, now + idx * 0.08);
+                    g.gain.setValueAtTime(0.08, now + idx * 0.08);
+                    g.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 0.25);
+                    o.start(now + idx * 0.08);
+                    o.stop(now + idx * 0.08 + 0.25);
+                });
+            } catch(e) {}
+        }
+
+        function playWrongSound() {
+            if (!gameState.soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.setValueAtTime(120, now + 0.1);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } catch(e) {}
+        }
+
+        function playMenuChimeSound() {
+            if (!gameState.soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.08);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } catch(e) {}
+        }
+
+        function defaultYearProgress() {
+            return { xp: 0, level: 1 };
+        }
+
+
+        function getWiraTitle(level = 1) {
+            const lvl = Math.max(1, Number(level) || 1);
+            if (lvl >= 100) return { title: 'MASTER WIRA MATEMATIK', emblem: '👑' };
+            if (lvl >= 90) return { title: 'WIRA TERTINGGI', emblem: '🏆' };
+            if (lvl >= 80) return { title: 'WIRA EPIK', emblem: '🐉' };
+            if (lvl >= 70) return { title: 'WIRA LEGENDA', emblem: '🌟' };
+            if (lvl >= 60) return { title: 'WIRA AGUNG', emblem: '👑' };
+            if (lvl >= 50) return { title: 'WIRA GAGAH', emblem: '🦁' };
+            if (lvl >= 40) return { title: 'WIRA BIJAKSANA', emblem: '💎' };
+            if (lvl >= 30) return { title: 'WIRA PANTAS', emblem: '⚡' };
+            if (lvl >= 20) return { title: 'WIRA PERKASA', emblem: '🔥' };
+            if (lvl >= 10) return { title: 'WIRA BERANI', emblem: '🛡️' };
+            return { title: 'WIRA MUDA', emblem: '⚔️' };
+        }
+
+
+        function loadGame() {
+            const saved = localStorage.getItem(SAVE_KEY);
+            if (saved) {
+                try {
+                    gameState = JSON.parse(saved);
+                } catch(e) {}
+            }
+            ensureProgressState();
+            loadYearProgress(currentYear);
+        }
+
+        function ensureProgressState() {
+            gameState.coins = Number.isFinite(Number(gameState.coins)) ? Number(gameState.coins) : 0;
+            gameState.xp = Number.isFinite(Number(gameState.xp)) ? Number(gameState.xp) : 0;
+            gameState.level = Number.isFinite(Number(gameState.level)) ? Number(gameState.level) : 1;
+            gameState.achievements = Object.assign({ firstMission:false, streak5:false, correct10:false, levelUp:false }, gameState.achievements || {});
+            if (!gameState.progressByYear || typeof gameState.progressByYear !== 'object') {
+                gameState.progressByYear = {
+                    1: { xp: gameState.xp, level: gameState.level },
+                    2: defaultYearProgress(),
+                    3: defaultYearProgress()
+                };
+            } else {
+                [1, 2, 3].forEach(y => {
+                    const p = gameState.progressByYear[y] || {};
+                    gameState.progressByYear[y] = {
+                        xp: Number.isFinite(Number(p.xp)) ? Number(p.xp) : 0,
+                        level: Number.isFinite(Number(p.level)) ? Number(p.level) : 1
+                    };
+                });
+            }
+        }
+
+        function saveYearProgress(year = currentYear) {
+            ensureProgressState();
+            gameState.progressByYear[year] = { xp: gameState.xp || 0, level: gameState.level || 1 };
+        }
+
+        function loadYearProgress(year = currentYear) {
+            ensureProgressState();
+            const p = gameState.progressByYear[year] || defaultYearProgress();
+            gameState.xp = p.xp;
+            gameState.level = p.level;
+        }
+
+        function saveGame() {
+            ensureProgressState();
+            saveYearProgress(currentYear);
+            localStorage.setItem(SAVE_KEY, JSON.stringify(gameState));
+        }
+
+        function addGameReward() {
+            ensureProgressState();
+            gameState.coins += 5;
+            gameState.xp += 10;
+            if (gameState.streak >= 3) gameState.coins += 2;
+            if (gameState.streak >= 5) gameState.achievements.streak5 = true;
+            if (gameState.correctCount >= 10) gameState.achievements.correct10 = true;
+            const oldLevel = gameState.level;
+            gameState.level = Math.floor(gameState.xp / 100) + 1;
+            saveYearProgress(currentYear);
+            if (gameState.level > oldLevel) {
+                gameState.achievements.levelUp = true;
+                return true;
+            }
+            return false;
+        }
+
+        function showCorrectReward() {
+            const levelUp = addGameReward();
+            const bonus = gameState.streak >= 3 ? '<br>🔥 Bonus streak: +2 🪙' : '';
+            const levelText = levelUp ? `<br><br>🎉 <b>LEVEL UP!</b> Wira kini Level ${gameState.level}!` : '';
+            return `+10 ⭐ &nbsp; +5 🪙 &nbsp; +10 XP${bonus}${levelText}`;
+        }
+
+        function toggleSound() {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            saveGame();
+            updateHeaderStats();
+            renderMainMenu();
+        }
+
+        function showModal(title, message, icon="🎉", btnText="OK", cb=null) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerHTML = message;
+            document.getElementById('modal-icon').innerText = icon;
+            const btnContainer = document.getElementById('modal-buttons');
+            btnContainer.innerHTML = `<button onclick="closeModal(); ${cb ? '('+cb.toString()+')()' : ''}" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-2xl font-bold transition w-full shadow-lg text-xs">OK</button>`;
+            document.getElementById('modal-overlay').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.add('hidden');
+        }
+
+        function confirmGoHome() {
+            showModal(
+                "🏠 Pasti mahu ke MENU?",
+                "Progress misi semasa akan disimpan.\n\nAdakah anda pasti mahu keluar ke MENU?",
+                "🏠",
+                "TERUSKAN MAIN",
+                () => {}
+            );
+            const btnContainer = document.getElementById('modal-buttons');
+            btnContainer.innerHTML = `
+                <button onclick="closeModal();" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl font-bold transition w-full shadow text-xs">TERUSKAN MAIN</button>
+                <button onclick="closeModal(); goMenu();" class="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:via-blue-500 hover:to-indigo-500 text-white px-3 py-2 rounded-xl font-bold transition w-full shadow text-xs">🏠 YA, KE MENU</button>
+            `;
+        }
+
+        function goMenu() {
+            closeModal();
+            renderMainMenu();
+        }
+
+        function updateHeaderStats() {
+            document.getElementById('stat-score').innerHTML = `⭐ ${gameState.score}`;
+            document.getElementById('stat-streak').innerHTML = `🔥 ${gameState.streak}`;
+            document.getElementById('stat-lives').innerHTML = '❤️'.repeat(Math.max(0, gameState.lives));
+            const coinEl = document.getElementById('stat-coins');
+            if (coinEl) coinEl.innerHTML = `🪙 ${gameState.coins || 0}`;
+            const sndBtn = document.getElementById('sound-toggle-btn');
+            if (sndBtn) sndBtn.innerHTML = gameState.soundEnabled ? '🔊' : '🔇';
+        }
+
+        function toggleHeader(show) {
+            const header = document.getElementById('game-header');
+            if (show) {
+                header.classList.remove('hidden');
+                updateHeaderStats();
+            } else {
+                header.classList.add('hidden');
+            }
+        }
+
+        function renderMainMenu() {
+            toggleHeader(false);
+            playMenuChimeSound();
+            const view = document.getElementById('app-view');
+            view.innerHTML = `
+                <div class="text-center flex flex-col items-center justify-center space-y-2 pop-animation my-auto w-full py-1 relative overflow-hidden">
+                    
+                    <div class="absolute -top-2 left-4 text-emerald-400 text-base font-black opacity-40 floating-elem pointer-events-none">+</div>
+                    <div class="absolute top-10 right-6 text-amber-300 text-sm font-black opacity-40 floating-elem-delay pointer-events-none">×</div>
+                    <div class="absolute bottom-20 left-6 text-pink-400 text-xs font-black opacity-30 floating-elem pointer-events-none">÷</div>
+                    <div class="absolute bottom-4 right-8 text-cyan-300 text-sm font-black opacity-40 floating-elem-delay pointer-events-none">−</div>
+                    <div class="absolute top-1/2 left-2 text-yellow-300 text-xs opacity-30 floating-elem pointer-events-none">⭐</div>
+
+                    <div class="bg-gradient-to-br from-indigo-950/90 via-purple-900/90 to-sky-950/90 border-2 border-cyan-400/50 p-3 sm:p-3.5 rounded-3xl shadow-[0_0_25px_rgba(56,189,248,0.25)] w-full max-w-sm relative">
+                        <button onclick="toggleSound();" aria-label="Bunyi" title="Bunyi"
+                            class="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-cyan-300/40 text-sm shadow-lg flex items-center justify-center transition active:scale-90">
+                            ${gameState.soundEnabled ? '🔊' : '🔇'}
+                        </button>
+                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-indigo-600 text-[10px] uppercase tracking-widest px-3.5 py-0.5 rounded-full font-bold border border-cyan-300 text-white shadow-md">
+                            ✨ MATH ADVENTURE ✨
+                        </div>
+                        <div class="text-3xl sm:text-4xl mb-1 flex justify-center items-center gap-2 drop-shadow-md">
+                            <span>🔢</span><span>🧩</span><span>⭐</span>
+                        </div>
+                        <h1 class="font-display text-lg sm:text-xl font-extrabold text-white tracking-wide shimmer-title">MISI WIRA MATEMATIK</h1>
+                        <p class="text-[11px] text-cyan-200 font-bold mt-0.5 tracking-wider">TAMBAH & TOLAK BENTUK LAZIM</p>
+                    </div>
+
+                    <div class="bg-slate-950/70 p-2.5 sm:p-3 rounded-2xl border border-indigo-500/30 w-full max-w-sm space-y-1.5 text-xs shadow-md backdrop-blur-sm">
+                        <span class="text-indigo-200 font-bold block">Pilih Tahun Misi:</span>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setYear(1)" id="year-1" class="py-2.5 rounded-xl font-display font-bold border transition transform hover:scale-[1.02] active:scale-95 ${currentYear===1?'bg-gradient-to-b from-cyan-500 to-blue-700 border-cyan-300 text-white shadow-[0_0_12px_rgba(6,182,212,0.7)] scale-[1.02] ring-2 ring-cyan-400/50':'bg-slate-800/90 border-slate-700 text-slate-200 hover:bg-slate-700'}">🎮 TAHUN 1</button>
+                            <button onclick="setYear(2)" id="year-2" class="py-2.5 rounded-xl font-display font-bold border transition transform hover:scale-[1.02] active:scale-95 ${currentYear===2?'bg-gradient-to-b from-cyan-500 to-blue-700 border-cyan-300 text-white shadow-[0_0_12px_rgba(6,182,212,0.7)] scale-[1.02] ring-2 ring-cyan-400/50':'bg-slate-800/90 border-slate-700 text-slate-200 hover:bg-slate-700'}">🎮 TAHUN 2</button>
+                            <button onclick="setYear(3)" id="year-3" class="py-2.5 rounded-xl font-display font-bold border transition transform hover:scale-[1.02] active:scale-95 ${currentYear===3?'bg-gradient-to-b from-cyan-500 to-blue-700 border-cyan-300 text-white shadow-[0_0_12px_rgba(6,182,212,0.7)] scale-[1.02] ring-2 ring-cyan-400/50':'bg-slate-800/90 border-slate-700 text-slate-200 hover:bg-slate-700'}">🎮 TAHUN 3</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950/70 p-2.5 sm:p-3 rounded-2xl border border-indigo-500/30 w-full max-w-sm space-y-1.5 text-xs shadow-md backdrop-blur-sm">
+                        <span class="text-indigo-200 font-bold block">Pilih Operasi:</span>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setOperation('tambah')" id="op-tambah" class="py-2 rounded-xl font-display font-bold border transition transform active:scale-95 ${currentOperation==='tambah'?'bg-gradient-to-b from-indigo-500 to-indigo-700 border-indigo-300 text-white shadow-[0_0_12px_rgba(99,102,241,0.7)] scale-[1.02] ring-2 ring-indigo-400/50':'bg-slate-800/90 border-slate-700 text-slate-200 hover:bg-slate-700'}"><span class="text-emerald-300 font-black">+</span> TAMBAH</button>
+                            <button onclick="setOperation('tolak')" id="op-tolak" class="py-2 rounded-xl font-display font-bold border transition transform active:scale-95 ${currentOperation==='tolak'?'bg-gradient-to-b from-indigo-500 to-indigo-700 border-indigo-300 text-white shadow-[0_0_12px_rgba(99,102,241,0.7)] scale-[1.02] ring-2 ring-indigo-400/50':'bg-slate-800/90 border-slate-700 text-slate-200 hover:bg-slate-700'}"><span class="text-amber-300 font-black">−</span> TOLAK</button>
+                            <button onclick="setOperation('campuran')" id="op-campuran" class="py-2 rounded-xl font-display font-bold border transition transform active:scale-95 ${currentOperation==='campuran'?'bg-gradient-to-b from-indigo-500 to-indigo-700 border-indigo-300 text-white shadow-[0_0_12px_rgba(99,102,241,0.7)] scale-[1.02] ring-2 ring-indigo-400/50':'bg-slate-800/90 border-slate-700 text-slate-200 hover:bg-slate-700'}"><span class="text-cyan-300 font-black">±</span> CAMPURAN</button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col w-full max-w-sm space-y-2">
+                        <button onclick="goToLevelMenu();" class="bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-600 hover:from-emerald-300 hover:to-teal-500 text-white font-display text-base sm:text-lg py-2.5 px-6 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.5)] transform hover:scale-[1.01] active:scale-95 transition flex items-center justify-center gap-2 border-b-4 border-emerald-900 font-extrabold tracking-wide animate-pulse">
+                            ▶️ PILIH ARAS (TAHUN ${currentYear})
+                        </button>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="openRewards()" class="bg-gradient-to-b from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-display text-xs py-2 px-3 rounded-2xl shadow transition font-bold border border-amber-400/40 flex items-center justify-center gap-1.5">
+                                🏆 REWARD
+                            </button>
+                            <button onclick="openStats()" class="bg-gradient-to-b from-slate-700 to-slate-900 hover:from-slate-600 hover:to-slate-800 text-white font-display text-xs py-2 px-3 rounded-2xl shadow transition font-bold border border-slate-600 flex items-center justify-center gap-1.5">
+                                📊 PRESTASI
+                            </button>
+                        </div>
+                        <div class="bg-gradient-to-r from-indigo-950/90 via-purple-950/90 to-sky-950/90 border border-cyan-400/30 rounded-2xl p-2.5 shadow-inner text-xs">
+                            <div class="flex items-center justify-between"><span class="font-display font-bold text-cyan-200">${getWiraTitle(gameState.level).emblem} ${getWiraTitle(gameState.level).title} <span class="text-white/80">• LEVEL ${gameState.level || 1}</span></span><span class="text-amber-300">🪙 ${gameState.coins || 0}</span></div>
+                            <div class="mt-1 h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700"><div class="h-full bg-gradient-to-r from-cyan-400 to-indigo-500" style="width:${(gameState.xp||0)%100}%"></div></div>
+                            <div class="flex justify-between mt-1 text-[9px] text-slate-400"><span>XP ${(gameState.xp||0)%100}/100</span><span>⭐ ${gameState.score}</span></div>
+                        </div>
+
+                        <div class="cfu-credit" aria-label="Kredit pencipta">
+<div class="cfu-credit-sub">Created &amp; Developed • Concept • Educational Design • Game Direction</div>
+                            <div class="cfu-credit-sub">AI-assisted development: ChatGPT &amp; Gemini • Visual &amp; Design: Canva</div>
+                            <div class="cfu-credit-sub">© 2026 Cfu Deen — All Rights Reserved</div>
+                            <div class="cfu-credit-line"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setYear(y) {
+            saveGame();
+            currentYear = y;
+            loadYearProgress(currentYear);
+            renderMainMenu();
+        }
+
+        function setOperation(op) {
+            currentOperation = op;
+            renderMainMenu();
+        }
+
+        function goToLevelMenu() {
+            playMenuChimeSound();
+            const view = document.getElementById('app-view');
+            
+            let level1Desc = currentYear === 1 
+                ? (currentOperation === 'tambah' ? "Objek jelas hasil tambah hingga 30" : "Penolakan dengan memotong objek (Contoh: 10 - 5)") 
+                : (currentYear === 2 ? "Lingkungan 1000 tanpa kumpul semula." : "Lingkungan 10,000 tanpa kumpul semula.");
+            
+            let level2Desc = currentYear === 1 
+                ? (currentOperation === 'tambah' ? "5 soalan (1 digit+1 digit) & 5 soalan (1 digit+2 digit)" : "5 soalan (1 digit−1 digit) & 5 soalan (2 digit−1 digit), tanpa kumpul semula") 
+                : (currentYear === 2 ? "Campuran 2 & 3 nombor dalam lingkungan 1000." : "Campuran 2 & 3 nombor dalam lingkungan 10,000.");
+
+            let level3Desc = currentYear === 1 
+                ? (currentOperation === 'tambah' ? "Semua penambahan 2 digit + 2 digit (tidak melebihi 100 tanpa kumpul semula)" : "2 digit−2 digit, tanpa kumpul semula") 
+                : (currentYear === 2 ? "Cabaran penuh lingkungan 1000 termasuk hasil tepat 1000." : "Cabaran penuh lingkungan 10,000 termasuk hasil tepat 10,000.");
+
+            view.innerHTML = `
+                <div class="flex flex-col h-full justify-between pop-animation py-1">
+                    <div>
+                        <div class="flex items-center justify-between text-xs font-bold bg-slate-950/70 p-2.5 rounded-2xl mb-3 border border-indigo-500/40 shadow">
+                            <span class="text-cyan-300 font-display">🌟 TAHUN ${currentYear} • ${currentOperation.toUpperCase()}</span>
+                            <button onclick="renderMainMenu()" class="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:via-blue-500 hover:to-indigo-500 text-white font-display text-xs px-3 py-2 rounded-xl font-extrabold border border-cyan-300/50 shadow-[0_0_14px_rgba(34,211,238,0.45)] transition transform hover:scale-[1.02] active:scale-95">🏠 MENU</button>
+                        </div>
+
+                        <div class="text-center mb-3">
+                            <h2 class="font-display text-lg sm:text-xl font-extrabold text-white tracking-wide">PILIH ARAS KESUKARAN</h2>
+                            <p class="text-[11px] text-slate-300">Mengikut DSKP Kurikulum Standard Sekolah Rendah.</p>
+                        </div>
+
+                        <div class="space-y-2.5 max-w-sm mx-auto w-full">
+                            <button onclick="startMissionWithLevel(1)" class="w-full text-left bg-gradient-to-r from-emerald-900/90 via-emerald-800/90 to-teal-900/90 border-2 border-emerald-400 p-3 rounded-2xl shadow transition transform hover:scale-[1.01] active:scale-95 flex items-center gap-3 group">
+                                <div class="w-12 h-12 rounded-2xl bg-emerald-500/30 border border-emerald-300 text-emerald-300 flex items-center justify-center text-2xl shrink-0">🟢</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between"><h3 class="font-display text-base font-bold text-white">ARAS 1: MUDAH</h3><span class="text-[10px] bg-emerald-500 text-slate-950 font-black px-2 py-0.5 rounded-full">MULA</span></div>
+                                    <p class="text-[11px] text-emerald-100/80">${level1Desc}</p>
+                                </div>
+                            </button>
+
+                            <button onclick="startMissionWithLevel(2)" class="w-full text-left bg-gradient-to-r from-amber-950/90 via-amber-900/90 to-yellow-950/90 border-2 border-amber-400 p-3 rounded-2xl shadow transition transform hover:scale-[1.01] active:scale-95 flex items-center gap-3 group">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/30 border border-amber-300 text-amber-300 flex items-center justify-center text-2xl shrink-0">🟠</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between"><h3 class="font-display text-base font-bold text-white">ARAS 2: SEDERHANA</h3><span class="text-[10px] bg-amber-400 text-slate-950 font-black px-2 py-0.5 rounded-full">PRO</span></div>
+                                    <p class="text-[11px] text-amber-100/80">${level2Desc}</p>
+                                </div>
+                            </button>
+
+                            <button onclick="startMissionWithLevel(3)" class="w-full text-left bg-gradient-to-r from-rose-950/90 via-red-900/90 to-rose-950/90 border-2 border-rose-400 p-3 rounded-2xl shadow transition transform hover:scale-[1.01] active:scale-95 flex items-center gap-3 group">
+                                <div class="w-12 h-12 rounded-2xl bg-rose-500/30 border border-rose-300 text-rose-300 flex items-center justify-center text-2xl shrink-0">🔴</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between"><h3 class="font-display text-base font-bold text-white">ARAS 3: CABARAN</h3><span class="text-[10px] bg-rose-500 text-white font-black px-2 py-0.5 rounded-full">WIRA</span></div>
+                                    <p class="text-[11px] text-rose-100/80">${level3Desc}</p>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startMissionWithLevel(lvl) {
+            currentLevel = lvl;
+            gameState.lives = 3;
+            currentQuestionIdx = 0;
+            activeQuestionData = generateQuestionForYear(currentOperation, currentYear, currentLevel, currentQuestionIdx);
+            toggleHeader(true);
+            renderQuestionView();
+        }
+
+        function startMission() {
+            goToLevelMenu();
+        }
+
+        function generateQuestionForYear(op, year, level = 1, idx = 0) {
+            let actualOp = op;
+            if (op === 'campuran') {
+                actualOp = idx % 2 === 0 ? 'tambah' : 'tolak';
+            }
+
+            let a = 0, b = 0, c = 0;
+            let numCount = 2;
+            let result = 0;
+            let carryExpected = { ribu: 0, ratus: 0, puluh: 0 };
+            let borrowExpected = { ribu: 0, ratus: 0, puluh: 0, sa: 0 }; 
+            let needsCarryOrBorrow = false;
+            let isVisual = false;
+            let iconA = visualIcons[Math.floor(Math.random() * visualIcons.length)];
+
+            if (level === 1) {
+                needsCarryOrBorrow = false;
+                numCount = 2;
+            } else if (level === 2) {
+                needsCarryOrBorrow = Math.random() < 0.5;
+                numCount = Math.random() < 0.4 ? 3 : 2;
+            } else {
+                needsCarryOrBorrow = true;
+                numCount = Math.random() < 0.5 ? 3 : 2;
+            }
+
+            if (year === 1) {
+                if (level === 1) {
+                    isVisual = true;
+                    if (actualOp === 'tambah') {
+                        a = Math.floor(Math.random() * 15) + 1;
+                        b = Math.floor(Math.random() * 15) + 1;
+                        if (a + b > 30) b = 30 - a;
+                    } else {
+                        a = Math.floor(Math.random() * 10) + 5;
+                        b = Math.floor(Math.random() * (a - 1)) + 1;
+                    }
+                } else if (level === 2) {
+                    isVisual = false;
+                    if (actualOp === 'tambah') {
+                        if (idx < 5) {
+                            // 5 soalan pertama: 1 digit + 1 digit, TANPA kumpul semula.
+                            // Jumlah mesti <= 9.
+                            a = Math.floor(Math.random() * 8) + 1; // 1..8
+                            b = Math.floor(Math.random() * (9 - a)) + 1; // 1..(9-a)
+                        } else {
+                            // 5 soalan seterusnya: 1 digit + 2 digit, TANPA kumpul semula.
+                            // Unit nombor 2 digit + digit pertama mesti <= 9.
+                            const t1 = Math.floor(Math.random() * 9) + 1; // 1..9
+                            const u1 = Math.floor(Math.random() * 9); // 0..8
+                            const maxB = 9 - u1;
+                            a = t1 * 10 + u1;
+                            b = Math.floor(Math.random() * maxB) + 1; // 1..(9-u1)
+                        }
+                    } else {
+                        if (idx < 5) {
+                            // 5 soalan: 1 digit − 1 digit, TANPA kumpul semula.
+                            a = Math.floor(Math.random() * 9) + 1;
+                            b = Math.floor(Math.random() * a) + 1;
+                        } else {
+                            // 5 soalan: 2 digit − 1 digit, TANPA kumpul semula.
+                            const tens = Math.floor(Math.random() * 9) + 1; // 1..9
+                            b = Math.floor(Math.random() * 9) + 1;           // 1..9
+                            const units = Math.floor(Math.random() * (10 - b)) + b; // b..9
+                            a = tens * 10 + units;
+                        }
+                        needsCarryOrBorrow = false;
+                    }
+                } else {
+                    isVisual = false;
+                    if (actualOp === 'tambah') {
+                        let t1 = Math.floor(Math.random() * 4) + 1;
+                        let t2 = Math.floor(Math.random() * (4 - t1)) + 1;
+                        let u1 = Math.floor(Math.random() * 4) + 1;
+                        let u2 = Math.floor(Math.random() * (8 - u1)) + 1;
+                        a = t1 * 10 + u1;
+                        b = t2 * 10 + u2;
+                    } else {
+                        // 2 digit − 2 digit, TANPA kumpul semula.
+                        let t1 = Math.floor(Math.random() * 5) + 5; // 5..9
+                        let t2 = Math.floor(Math.random() * (t1 - 1)) + 1; // 1..t1-1
+                        let u1 = Math.floor(Math.random() * 5) + 5; // 5..9
+                        let u2 = Math.floor(Math.random() * (u1 + 1)); // 0..u1
+                        a = t1 * 10 + u1;
+                        b = t2 * 10 + u2;
+                        needsCarryOrBorrow = false;
+                    }
+                }
+                result = actualOp === 'tambah' ? (a + b) : (a - b);
+            } else if (year === 2) {
+                if (actualOp === 'tambah') {
+                    // TAHUN 2 TAMBAH: semua addend <= 999 dan hasil <= 1000.
+                    if (level === 3 && Math.random() < 0.3) {
+                        if (numCount === 2) {
+                            a = Math.floor(Math.random() * 800) + 200;
+                            b = 1000 - a;
+                        } else {
+                            a = Math.floor(Math.random() * 400) + 100;
+                            b = Math.floor(Math.random() * 400) + 100;
+                            const maxC = 1000 - a - b;
+                            c = Math.max(1, Math.floor(Math.random() * Math.max(1, maxC)) + 1);
+                            if (a + b + c > 1000) c = 1000 - a - b;
+                        }
+                    } else if (!needsCarryOrBorrow) {
+                        if (numCount === 2) {
+                            let u1 = Math.floor(Math.random() * 4) + 1;
+                            let u2 = Math.floor(Math.random() * (9 - u1)) + 1;
+                            let d1 = Math.floor(Math.random() * 4) + 1;
+                            let d2 = Math.floor(Math.random() * (8 - d1)) + 1;
+                            let h1 = Math.floor(Math.random() * 3) + 1;
+                            let h2 = Math.floor(Math.random() * (7 - h1)) + 1;
+                            a = h1 * 100 + d1 * 10 + u1;
+                            b = h2 * 100 + d2 * 10 + u2;
+                        } else {
+                            a = Math.floor(Math.random() * 300) + 100;
+                            b = Math.floor(Math.random() * 200) + 100;
+                            const maxC = 1000 - a - b;
+                            c = Math.max(10, Math.floor(Math.random() * Math.max(1, maxC - 9)) + 10);
+                            if (a + b + c > 1000) c = 1000 - a - b;
+                        }
+                        carryExpected = { ribu: 0, ratus: 0, puluh: 0 };
+                    } else {
+                        if (numCount === 2) {
+                            a = Math.floor(Math.random() * 500) + 100;
+                            b = Math.floor(Math.random() * (999 - a)) + 1;
+                            if (a + b > 1000) b = 1000 - a;
+                        } else {
+                            a = Math.floor(Math.random() * 300) + 100;
+                            b = Math.floor(Math.random() * 300) + 100;
+                            const maxC = 1000 - a - b;
+                            c = Math.max(10, Math.floor(Math.random() * Math.max(1, maxC - 9)) + 10);
+                            if (a + b + c > 1000) c = 1000 - a - b;
+                        }
+                        let sumU = (a % 10) + (b % 10) + (numCount === 3 ? (c % 10) : 0);
+                        let cPuluh = Math.floor(sumU / 10);
+                        let sumD = Math.floor((a % 100) / 10) + Math.floor((b % 100) / 10) + (numCount === 3 ? Math.floor((c % 100) / 10) : 0) + cPuluh;
+                        let cRatus = Math.floor(sumD / 10);
+                        let sumH = Math.floor((a % 1000) / 100) + Math.floor((b % 1000) / 100) + (numCount === 3 ? Math.floor((c % 1000) / 100) : 0) + cRatus;
+                        let cRibu = Math.floor(sumH / 10);
+                        carryExpected = { ribu: cRibu, ratus: cRatus, puluh: cPuluh };
+                    }
+                    result = numCount === 3 ? (a + b + c) : (a + b);
+                } else {
+                    if (!needsCarryOrBorrow) {
+                        let h1 = Math.floor(Math.random() * 4) + 5;
+                        let h2 = Math.floor(Math.random() * h1) + 1;
+                        let d1 = Math.floor(Math.random() * 4) + 5;
+                        let d2 = Math.floor(Math.random() * d1);
+                        let u1 = Math.floor(Math.random() * 5) + 5;
+                        let u2 = Math.floor(Math.random() * u1);
+                        a = h1 * 100 + d1 * 10 + u1;
+                        b = h2 * 100 + d2 * 10 + u2;
+                        borrowExpected = { ratus: 0, puluh: 0, sa: 0 };
+                    } else {
+                        let h1 = Math.floor(Math.random() * 3) + 5;
+                        let h2 = Math.floor(Math.random() * 3) + 1;
+                        let d1 = Math.floor(Math.random() * 4) + 1;
+                        let d2 = Math.floor(Math.random() * 4) + d1 + 1;
+                        let u1 = Math.floor(Math.random() * 4) + 1;
+                        let u2 = Math.floor(Math.random() * 4) + u1 + 1;
+                        a = h1 * 100 + d1 * 10 + u1;
+                        b = h2 * 100 + d2 * 10 + u2;
+
+                        let uStr = String(a).slice(-1);
+                        let bStr = String(b).slice(-1);
+                        let bU = (parseInt(uStr) < parseInt(bStr)) ? 1 : 0;
+                        
+                        let dStr = String(Math.floor((a%100)/10));
+                        let bdStr = String(Math.floor((b%100)/10));
+                        let adjD = parseInt(dStr) - bU;
+                        let bD = (adjD < parseInt(bdStr)) ? 1 : 0;
+
+                        borrowExpected = { ratus: 0, puluh: bD, sa: bU };
+                    }
+                    result = a - b;
+                }
+            } else if (year === 3) {
+                if (actualOp === 'tambah') {
+                    if (level === 3 && Math.random() < 0.25) {
+                        if (numCount === 2) {
+                            a = Math.floor(Math.random() * 8000) + 1000;
+                            b = 10000 - a;
+                        } else {
+                            a = Math.floor(Math.random() * 3000) + 1000;
+                            b = Math.floor(Math.random() * 3000) + 1000;
+                            c = 10000 - (a + b);
+                        }
+                    } else if (!needsCarryOrBorrow) {
+                        if (numCount === 2) {
+                            let u1 = Math.floor(Math.random() * 4) + 1;
+                            let u2 = Math.floor(Math.random() * (8 - u1)) + 1;
+                            let d1 = Math.floor(Math.random() * 4) + 1;
+                            let d2 = Math.floor(Math.random() * (8 - d1)) + 1;
+                            let h1 = Math.floor(Math.random() * 4) + 1;
+                            let h2 = Math.floor(Math.random() * (8 - h1)) + 1;
+                            let th1 = Math.floor(Math.random() * 3) + 1;
+                            let th2 = Math.floor(Math.random() * (6 - th1)) + 1;
+                            a = th1 * 1000 + h1 * 100 + d1 * 10 + u1;
+                            b = th2 * 1000 + h2 * 100 + d2 * 10 + u2;
+                        } else {
+                            a = Math.floor(Math.random() * 3000) + 1000;
+                            b = Math.floor(Math.random() * 2000) + 1000;
+                            c = Math.floor(Math.random() * 2000) + 500;
+                            while (a + b + c > 10000) {
+                                a = Math.floor(Math.random() * 2500) + 500;
+                                b = Math.floor(Math.random() * 2500) + 500;
+                                c = Math.floor(Math.random() * 2000) + 500;
+                            }
+                        }
+                        carryExpected = { ribu: 0, ratus: 0, puluh: 0 };
+                    } else {
+                        if (numCount === 2) {
+                            a = Math.floor(Math.random() * 4000) + 1000;
+                            b = Math.floor(Math.random() * 4000) + 1000;
+                            if (a + b > 10000) b = 10000 - a;
+                        } else {
+                            a = Math.floor(Math.random() * 3000) + 1000;
+                            b = Math.floor(Math.random() * 3000) + 1000;
+                            c = Math.floor(Math.random() * 2000) + 500;
+                            if (a + b + c > 10000) {
+                                c = 10000 - (a + b);
+                                if (c < 100) c = 100;
+                            }
+                        }
+                        let sumU = (a % 10) + (b % 10) + (numCount === 3 ? (c % 10) : 0);
+                        let cPuluh = Math.floor(sumU / 10);
+                        let sumD = Math.floor((a % 100) / 10) + Math.floor((b % 100) / 10) + (numCount === 3 ? Math.floor((c % 100) / 10) : 0) + cPuluh;
+                        let cRatus = Math.floor(sumD / 10);
+                        let sumH = Math.floor((a % 1000) / 100) + Math.floor((b % 1000) / 100) + (numCount === 3 ? Math.floor((c % 1000) / 100) : 0) + cRatus;
+                        let cRibu = Math.floor(sumH / 10);
+                        carryExpected = { ribu: cRibu, ratus: cRatus, puluh: cPuluh };
+                    }
+                    result = numCount === 3 ? (a + b + c) : (a + b);
+                } else {
+                    // TAHUN 3 TOLAK — SEMENTARA GUNA KONSEP TAHUN 2.
+                    // 4 digit, tetapi logik jana soalan dan pinjaman mengikut konsep
+                    // Tahun 2: semak lajur dari SA -> PULUH -> RATUS -> RIBU.
+                    numCount = 2;
+                    isVisual = false;
+
+                    const calcBorrowFlags = (top, bottom) => {
+                        const uA = top % 10, uB = bottom % 10;
+                        const borrowSa = uA < uB ? 1 : 0;
+
+                        const dA = Math.floor(top / 10) % 10;
+                        const dB = Math.floor(bottom / 10) % 10;
+                        const effectiveD = dA - borrowSa;
+                        const borrowPuluh = effectiveD < dB ? 1 : 0;
+
+                        const hA = Math.floor(top / 100) % 10;
+                        const hB = Math.floor(bottom / 100) % 10;
+                        const effectiveH = hA - borrowPuluh;
+                        const borrowRatus = effectiveH < hB ? 1 : 0;
+
+                        const thA = Math.floor(top / 1000) % 10;
+                        const thB = Math.floor(bottom / 1000) % 10;
+                        const effectiveTh = thA - borrowRatus;
+                        const borrowRibu = effectiveTh < thB ? 1 : 0;
+
+                        return { sa: borrowSa, puluh: borrowPuluh, ratus: borrowRatus, ribu: borrowRibu };
+                    };
+
+                    if (!needsCarryOrBorrow) {
+                        // Tiada pinjaman: setiap lajur atas >= bawah.
+                        do {
+                            const th1 = Math.floor(Math.random() * 8) + 2;
+                            const th2 = Math.floor(Math.random() * (th1 - 1)) + 1;
+                            const h1 = Math.floor(Math.random() * 9);
+                            const h2 = Math.floor(Math.random() * (h1 + 1));
+                            const d1 = Math.floor(Math.random() * 9);
+                            const d2 = Math.floor(Math.random() * (d1 + 1));
+                            const u1 = Math.floor(Math.random() * 10);
+                            const u2 = Math.floor(Math.random() * (u1 + 1));
+
+                            a = th1 * 1000 + h1 * 100 + d1 * 10 + u1;
+                            b = th2 * 1000 + h2 * 100 + d2 * 10 + u2;
+                        } while (a <= b || calcBorrowFlags(a, b).sa || calcBorrowFlags(a, b).puluh || calcBorrowFlags(a, b).ratus || calcBorrowFlags(a, b).ribu);
+                    } else {
+                        // Ada pinjaman: jana sehingga sekurang-kurangnya satu lajur perlu pinjaman,
+                        // tetapi tidak memerlukan pinjaman dari P.RIBU.
+                        do {
+                            a = Math.floor(Math.random() * 9000) + 1000;
+                            b = Math.floor(Math.random() * (a - 1)) + 1;
+                            if (b < 1000) continue;
+                            const flags = calcBorrowFlags(a, b);
+                            if (flags.ribu) continue;
+                            if (!(flags.sa || flags.puluh || flags.ratus)) continue;
+                            break;
+                        } while (true);
+                    }
+
+                    const flags = calcBorrowFlags(a, b);
+                    borrowExpected = {
+                        ribu: 0,
+                        ratus: flags.ratus,
+                        puluh: flags.puluh,
+                        sa: flags.sa
+                    };
+                    result = a - b;
+                }
+            }
+
+            let choices = [];
+            if (isVisual) {
+                choices.push(result);
+                while (choices.length < 3) {
+                    let wrong = result + (Math.floor(Math.random() * 7) - 3);
+                    if (wrong !== result && wrong >= 0 && !choices.includes(wrong)) {
+                        choices.push(wrong);
+                    }
+                }
+                choices.sort(() => Math.random() - 0.5);
+            }
+
+            return {
+                op: actualOp,
+                year: year,
+                level: level,
+                isVisual: isVisual,
+                numCount: numCount,
+                a: a,
+                b: b,
+                c: c,
+                result: result,
+                choices: choices,
+                iconA: iconA,
+                carryExpected: carryExpected,
+                borrowExpected: borrowExpected,
+                needsCarry: needsCarryOrBorrow
+            };
+        }
+
+        function renderQuestionView() {
+            const view = document.getElementById('app-view');
+            const q = activeQuestionData;
+
+            if (q.isVisual) {
+                let visualHtml = '';
+                if (q.op === 'tambah') {
+                    let visualA = (q.iconA + ' ').repeat(q.a).trim();
+                    let visualB = (q.iconA + ' ').repeat(q.b).trim();
+                    visualHtml = `
+                        <div class="select-none text-2xl sm:text-3xl leading-relaxed flex flex-wrap justify-center gap-1 max-w-xs">${visualA}</div>
+                        <div class="text-indigo-400 font-black text-lg my-1">+</div>
+                        <div class="select-none text-2xl sm:text-3xl leading-relaxed flex flex-wrap justify-center gap-1 max-w-xs">${visualB}</div>
+                    `;
+                } else {
+                    let itemsHtml = '';
+                    for (let i = 0; i < q.a; i++) {
+                        let isCrossed = i >= (q.a - q.b);
+                        itemsHtml += `<span class="inline-block transition ${isCrossed ? 'crossed-out' : ''}">${q.iconA}</span> `;
+                    }
+                    visualHtml = `
+                        <div class="text-center w-full">
+                            <p class="text-[10px] text-amber-300 font-bold mb-1">Nota: ${q.b} objek dipotong dengan garisan merah</p>
+                            <div class="select-none text-2xl sm:text-3xl leading-relaxed flex flex-wrap justify-center gap-1 max-w-xs mx-auto p-2 bg-slate-900/80 rounded-xl border border-indigo-500/20">${itemsHtml}</div>
+                        </div>
+                    `;
+                }
+
+                let choicesHtml = q.choices.map(c => `
+                    <button onclick="checkVisualAnswer(${c})" class="bg-indigo-700 hover:bg-indigo-600 active:scale-95 text-white font-display text-base sm:text-lg font-bold py-2 rounded-2xl shadow-lg border-2 border-indigo-400 transition">
+                        ${c}
+                    </button>
+                `).join('');
+
+                view.innerHTML = `
+                    <div class="flex flex-col h-full justify-between">
+                        <div>
+                            <div class="flex items-center justify-between text-xs font-bold bg-slate-950/60 p-2 rounded-xl mb-1.5 border border-indigo-500/30">
+                                <span class="text-indigo-300">📚 Tahun 1 • Aras 1 (${q.op.toUpperCase()})</span>
+                                <span class="text-accent">❓ Soalan ${currentQuestionIdx + 1}/${questionLimit}</span>
+                            </div>
+
+                            <div class="bg-slate-950/90 border-2 border-indigo-500/50 p-2.5 rounded-2xl shadow-xl flex flex-col items-center">
+                                <span class="text-[10px] text-indigo-200 font-bold shrink-0 mb-1">${q.op === 'tolak' ? 'Kira baki objek yang tidak dipotong:' : 'Kira jumlah objek dengan jelas:'}</span>
+                                <div class="font-mono text-amber-300 text-center bg-slate-900/90 p-2.5 rounded-xl border border-indigo-500/30 w-full max-h-[38dvh] overflow-y-auto flex flex-col items-center justify-center space-y-1 shadow-inner">
+                                    ${visualHtml}
+                                </div>
+                                <div class="text-xl sm:text-2xl font-extrabold text-white shrink-0 pt-2">${q.a} ${q.op === 'tambah' ? '+' : '−'} ${q.b} = ?</div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1 mt-1">
+                            <span class="text-[10px] text-indigo-300 font-bold block text-center">PILIH JAWAPAN YANG BETUL:</span>
+                            <div class="grid grid-cols-3 gap-2">
+                                ${choicesHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            let opSign = q.op === 'tambah' ? '<span class="text-indigo-400 text-xl font-black drop-shadow-[0_0_6px_rgba(99,102,241,0.6)]">+</span>' : '<span class="text-amber-400 text-2xl font-black drop-shadow-[0_0_6px_rgba(245,158,11,0.6)]">−</span>';
+            
+            let tableHtml = '';
+
+            if (q.year === 1) {
+                // TAHUN 1: Aras 2 & 3 — bentuk lazim dua nilai tempat.
+                const aTens = Math.floor(q.a / 10);
+                const aUnits = q.a % 10;
+                const bTens = Math.floor(q.b / 10);
+                const bUnits = q.b % 10;
+
+                if (q.op === 'tambah' && q.level === 2 && currentQuestionIdx < 5) {
+                    // 5 soalan: 1 digit + 1 digit.
+                    const hasPuluhBox = q.result >= 10;
+                    tableHtml = `
+                        <table class="w-full text-center font-mono text-sm sm:text-base border-collapse">
+                            <thead><tr class="text-[9px] sm:text-[10px] text-slate-400 font-sans border-b border-indigo-500/30 bg-slate-950/60"><th class="py-0.5 px-1 border-r border-indigo-500/20">PULUH</th><th class="py-0.5 px-1">SA</th></tr></thead>
+                            <tbody>
+                                <tr class="border-b border-indigo-500/20 text-white font-bold"><td class="p-1.5 border-r border-indigo-500/20"></td><td class="p-1.5">${q.a}</td></tr>
+                                <tr class="border-b-2 sm:border-b-4 border-slate-600 text-white font-bold"><td class="p-1.5 border-r border-indigo-500/20 font-sans text-left pl-2 align-middle"><span class="relative inline-flex w-full items-center justify-center"><span class="absolute left-1 sm:left-2">${opSign}</span></span></td><td class="p-1.5">${q.b}</td></tr>
+                                <tr class="font-bold"><td class="p-1.5 border-r border-indigo-500/20">${hasPuluhBox ? `<input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-puluh" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-sm patch-box-bottom-styled" placeholder="?">` : ''}</td><td class="p-1.5"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-sa" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-sm patch-box-bottom-styled" placeholder="?"></td></tr>
+                            </tbody>
+                        </table>`;
+                } else if (q.op === 'tambah' && q.level === 2 && currentQuestionIdx >= 5) {
+                    // 5 soalan: 1 digit + 2 digit — nombor 2 digit mesti disusun PULUH/SA.
+                    tableHtml = `
+                        <table class="w-full text-center font-mono text-sm sm:text-base border-collapse">
+                            <thead><tr class="text-[9px] sm:text-[10px] text-slate-400 font-sans border-b border-indigo-500/30 bg-slate-950/60"><th class="py-0.5 px-1 border-r border-indigo-500/20">PULUH</th><th class="py-0.5 px-1">SA</th></tr></thead>
+                            <tbody>
+                                <tr class="border-b border-indigo-500/20 text-white font-bold"><td class="p-1.5 border-r border-indigo-500/20">${aTens}</td><td class="p-1.5">${aUnits}</td></tr>
+                                <tr class="border-b-2 sm:border-b-4 border-slate-600 text-white font-bold"><td class="p-1.5 border-r border-indigo-500/20 font-sans text-left pl-2 align-middle"><span class="relative inline-flex w-full items-center justify-center"><span class="absolute left-1 sm:left-2">${opSign}</span></span></td><td class="p-1.5">${bUnits}</td></tr>
+                                <tr class="font-bold"><td class="p-1.5 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-puluh" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-sm patch-box-bottom-styled" placeholder="?"></td><td class="p-1.5"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-sa" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-sm patch-box-bottom-styled" placeholder="?"></td></tr>
+                            </tbody>
+                        </table>`;
+                } else if (q.level === 3) {
+                    // Aras 3: 2 digit + 2 digit / 2 digit − 2 digit.
+                    tableHtml = `
+                        <table class="w-full text-center font-mono text-sm sm:text-base border-collapse">
+                            <thead><tr class="text-[9px] sm:text-[10px] text-slate-400 font-sans border-b border-indigo-500/30 bg-slate-950/60"><th class="py-0.5 px-1 border-r border-indigo-500/20">PULUH</th><th class="py-0.5 px-1">SA</th></tr></thead>
+                            <tbody>
+                                <tr class="border-b border-indigo-500/20 text-white font-bold"><td class="p-1.5 border-r border-indigo-500/20">${aTens}</td><td class="p-1.5">${aUnits}</td></tr>
+                                <tr class="border-b-2 sm:border-b-4 border-slate-600 text-white font-bold"><td class="p-1.5 border-r border-indigo-500/20 font-sans text-left pl-2 align-middle"><span class="relative inline-flex w-full items-center justify-center"><span class="absolute left-1 sm:left-2">${opSign}</span><span class="font-mono">${bTens}</span></span></td><td class="p-1.5">${bUnits}</td></tr>
+                                <tr class="font-bold"><td class="p-1.5 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-puluh" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-sm patch-box-bottom-styled" placeholder="?"></td><td class="p-1.5"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-sa" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-sm patch-box-bottom-styled" placeholder="?"></td></tr>
+                            </tbody>
+                        </table>`;
+                } else {
+                    // Aras 2 Tolak.
+                    if (currentQuestionIdx < 5) {
+                        // 1 digit − 1 digit.
+                        tableHtml = `
+                            <table class="w-full text-center font-mono text-sm sm:text-base border-collapse">
+                                <thead><tr class="text-[9px] sm:text-[10px] text-slate-400 font-sans border-b border-indigo-500/30 bg-slate-950/60"><th class="py-0.5 px-1 border-r border-indigo-500/20">PULUH</th><th class="py-0.5 px-1">SA</th></tr></thead>
+                                <tbody>
+                                    <tr class="border-b border-indigo-500/20 text-white font-bold"><td class="p-1.5 border-r border-indigo-500/20"></td><td class="p-1.5">${q.a}</td></tr>
+                                    <tr class="border-b-2 sm:border-b-4 border-slate-600 text-white font-bold"><td class="p-1.5 border-r border-indigo-500/20 font-sans text-left pl-2 align-middle"><span class="relative inline-flex w-full items-center justify-center"><span class="absolute left-1 sm:left-2">${opSign}</span></span></td><td class="p-1.5">${q.b}</td></tr>
+                                    <tr class="font-bold"><td class="p-1.5 border-r border-indigo-500/20"></td><td class="p-1.5"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-sa" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-sm patch-box-bottom-styled" placeholder="?"></td></tr>
+                                </tbody>
+                            </table>`;
+                    } else {
+                        // 2 digit − 1 digit. Puluh nombor atas dikekalkan, unit bawah di SA.
+                        tableHtml = `
+                            <table class="w-full text-center font-mono text-sm sm:text-base border-collapse">
+                                <thead><tr class="text-[9px] sm:text-[10px] text-slate-400 font-sans border-b border-indigo-500/30 bg-slate-950/60"><th class="py-0.5 px-1 border-r border-indigo-500/20">PULUH</th><th class="py-0.5 px-1">SA</th></tr></thead>
+                                <tbody>
+                                    <tr class="border-b border-indigo-500/20 text-white font-bold"><td class="p-1.5 border-r border-indigo-500/20">${aTens}</td><td class="p-1.5">${aUnits}</td></tr>
+                                    <tr class="border-b-2 sm:border-b-4 border-slate-600 text-white font-bold"><td class="p-1.5 border-r border-indigo-500/20 font-sans text-left pl-2 align-middle"><span class="relative inline-flex w-full items-center justify-center"><span class="absolute left-1 sm:left-2">${opSign}</span></span></td><td class="p-1.5">${bUnits}</td></tr>
+                                    <tr class="font-bold"><td class="p-1.5 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-puluh" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-sm patch-box-bottom-styled" placeholder="?"></td><td class="p-1.5"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-sa" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-sm patch-box-bottom-styled" placeholder="?"></td></tr>
+                                </tbody>
+                            </table>`;
+                    }
+                }
+            } else if (q.year === 2) {
+                // TAHUN 2: Lingkungan 1000 (Ratus, Puluh, Sa)
+                let aStr = String(q.a).padStart(3, ' ');
+                let bStr = String(q.b).padStart(3, ' ');
+                let cStr = q.numCount === 3 ? String(q.c).padStart(3, ' ') : '';
+                let aArr = aStr.split('');
+                let bArr = bStr.split('');
+                let cArr = q.numCount === 3 ? cStr.split('') : [];
+
+                if (q.op === 'tambah') {
+                    // TAHUN 2 TAMBAH: 4 nilai tempat sahaja, align dari SA ke kiri.
+                    const aArr = String(q.a).padStart(4, ' ').split('');
+                    const bArr = String(q.b).padStart(4, ' ').split('');
+                    const cArr = q.numCount === 3 ? String(q.c).padStart(4, ' ').split('') : [];
+
+                    let sumU = (q.a % 10) + (q.b % 10) + (q.numCount === 3 ? (q.c % 10) : 0);
+                    let carryPuluhVal = Math.floor(sumU / 10);
+                    let sumD = Math.floor((q.a % 100) / 10) + Math.floor((q.b % 100) / 10) + (q.numCount === 3 ? Math.floor((q.c % 100) / 10) : 0) + carryPuluhVal;
+                    let carryRatusVal = Math.floor(sumD / 10);
+                    let sumH = Math.floor((q.a % 1000) / 100) + Math.floor((q.b % 1000) / 100) + (q.numCount === 3 ? Math.floor((q.c % 1000) / 100) : 0) + carryRatusVal;
+                    let carryRibuVal = Math.floor(sumH / 10);
+
+                    let needPuluhCarry = carryPuluhVal > 0;
+                    let needRatusCarry = carryRatusVal > 0;
+                    let needRibuCarry = carryRibuVal > 0;
+                    let hasAnyCarry = needPuluhCarry || needRatusCarry || needRibuCarry;
+
+                    let carryRowHtml = '';
+                    if (hasAnyCarry) {
+                        carryRowHtml = `
+                            <tr class="border-b border-indigo-500/20 bg-slate-900/40 text-center">
+                                <td class="p-0.5 border-r border-indigo-500/20">${needRibuCarry ? `<input type="text" maxlength="1" readonly onclick="focusCell(this)" id="carry-ribu" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg font-bold text-center cursor-pointer focus:outline-none text-xs patch-box-top-styled" placeholder=" ">` : ''}</td>
+                                <td class="p-0.5 border-r border-indigo-500/20">${needRatusCarry ? `<input type="text" maxlength="1" readonly onclick="focusCell(this)" id="carry-ratus" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg font-bold text-center cursor-pointer focus:outline-none text-xs patch-box-top-styled" placeholder=" ">` : ''}</td>
+                                <td class="p-0.5 border-r border-indigo-500/20">${needPuluhCarry ? `<input type="text" maxlength="1" readonly onclick="focusCell(this)" id="carry-puluh" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg font-bold text-center cursor-pointer focus:outline-none text-xs patch-box-top-styled" placeholder=" ">` : ''}</td>
+                                <td class="p-0.5"></td>
+                            </tr>
+                        `;
+                    }
+
+                    let rowsDataHtml = `
+                        <tr class="border-b border-indigo-500/20 text-white font-bold">
+                            <td class="p-1.5 border-r border-indigo-500/20">${aArr[0]}</td>
+                            <td class="p-1.5 border-r border-indigo-500/20">${aArr[1]}</td>
+                            <td class="p-1.5 border-r border-indigo-500/20">${aArr[2]}</td>
+                            <td class="p-1.5">${aArr[3]}</td>
+                        </tr>
+                    `;
+                    if (q.numCount === 3) {
+                        rowsDataHtml += `
+                            <tr class="border-b border-indigo-500/20 text-white font-bold">
+                                <td class="p-1.5 border-r border-indigo-500/20">${bArr[0]}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${bArr[1]}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${bArr[2]}</td>
+                                <td class="p-1.5">${bArr[3]}</td>
+                            </tr>
+                            <tr class="border-b border-indigo-500/20 text-white font-bold">
+                                <td class="p-1.5 border-r border-indigo-500/20 font-sans text-left pl-2 align-middle text-indigo-400">+</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${cArr[1]}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${cArr[2]}</td>
+                                <td class="p-1.5">${cArr[3]}</td>
+                            </tr>
+                        `;
+                    } else {
+                        rowsDataHtml += `
+                            <tr class="border-b-2 sm:border-b-4 border-slate-600 text-white font-bold">
+                                <td class="p-1.5 border-r border-indigo-500/20 font-sans text-left pl-2 align-middle">${opSign}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${bArr[1]}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${bArr[2]}</td>
+                                <td class="p-1.5">${bArr[3]}</td>
+                            </tr>
+                        `;
+                    }
+                    if (q.numCount === 3) {
+                        rowsDataHtml += `
+                            <tr class="border-b-2 sm:border-b-4 border-slate-600 text-white font-bold">
+                                <td colspan="4" class="p-0.5 border-t border-indigo-500/30"></td>
+                            </tr>
+                        `;
+                    }
+
+                    tableHtml = `
+                        <table class="w-full text-center font-mono text-xs sm:text-sm border-collapse">
+                            <thead>
+                                <tr class="text-[8px] sm:text-[9px] text-slate-400 font-sans border-b border-indigo-500/30 bg-slate-950/60">
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/20">RIBU</th>
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/20">RATUS</th>
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/20">PULUH</th>
+                                    <th class="py-0.5 px-0.5">SA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${carryRowHtml}
+                                ${rowsDataHtml}
+                                <tr class="font-bold">
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-ribu" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-ratus" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-puluh" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-sa" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `;
+                } else {
+                    // TAHUN 2 TOLAK: kekalkan 4 nilai tempat RIBU | RATUS | PULUH | SA.
+                    // Tahun 2 masih menggunakan nombor hingga 999, jadi lajur RIBU biasanya kosong.
+                    let uA = q.a % 10;
+                    let uB = q.b % 10;
+                    let needSaBorrow = uA < uB;
+
+                    let dA = Math.floor((q.a % 100) / 10);
+                    let dB = Math.floor((q.b % 100) / 10);
+                    let adjDA = dA - (needSaBorrow ? 1 : 0);
+                    let needPuluhBorrow = adjDA < dB;
+
+                    let aSubArr = String(q.a).padStart(4, ' ').split('');
+                    let bSubArr = String(q.b).padStart(4, ' ').split('');
+
+                    let digitTh = aSubArr[0];
+                    let digitH = aSubArr[1];
+                    let digitD = aSubArr[2];
+                    let digitU = aSubArr[3];
+
+                    let thHtml = `<span id="digit-ribu-val">${digitTh}</span>`;
+                    let hHtml = `<span id="digit-ratus-val">${digitH}</span>`;
+                    let dHtml = `<span id="digit-puluh-val">${digitD}</span>`;
+                    let uHtml = `<span id="digit-sa-val">${digitU}</span>`;
+
+                    let borrowBoxSaHtml = needSaBorrow ? `<input type="text" maxlength="2" readonly onclick="focusCell(this)" id="borrow-in-sa" class="w-7 h-5 sm:w-8 sm:h-6 rounded font-bold text-center cursor-pointer focus:outline-none shadow mx-auto block text-[10px] patch-box-top-styled" placeholder=" ">` : '';
+                    let borrowBoxPuluhHtml = needPuluhBorrow ? `<input type="text" maxlength="2" readonly onclick="focusCell(this)" id="borrow-in-puluh" class="w-7 h-5 sm:w-8 sm:h-6 rounded font-bold text-center cursor-pointer focus:outline-none shadow mx-auto block text-[10px] patch-box-top-styled" placeholder=" ">` : '';
+
+                    let borrowRowHtml = `
+                        <tr class="border-b border-indigo-500/20 bg-slate-900/40 text-center text-[10px]">
+                            <td class="p-0.5 border-r border-indigo-500/20"></td>
+                            <td class="p-0.5 border-r border-indigo-500/20"></td>
+                            <td class="p-0.5 border-r border-indigo-500/20">${borrowBoxPuluhHtml}</td>
+                            <td class="p-0.5">${borrowBoxSaHtml}</td>
+                        </tr>
+                    `;
+
+                    tableHtml = `
+                        <table class="w-full text-center font-mono text-xs sm:text-sm border-collapse">
+                            <thead>
+                                <tr class="text-[8px] sm:text-[9px] text-slate-400 font-sans border-b border-indigo-500/30 bg-slate-950/60">
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/25">RIBU</th>
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/25">RATUS</th>
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/25">PULUH</th>
+                                    <th class="py-0.5 px-0.5">SA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${borrowRowHtml}
+                                <tr class="border-b border-indigo-500/20 text-white font-bold">
+                                    <td class="p-1 border-r border-indigo-500/20" id="row-proses-ribu">${thHtml}</td>
+                                    <td class="p-1 border-r border-indigo-500/20" id="row-proses-ratus">${hHtml}</td>
+                                    <td class="p-1 border-r border-indigo-500/20" id="row-proses-puluh">${dHtml}</td>
+                                    <td class="p-1" id="row-proses-sa">${uHtml}</td>
+                                </tr>
+                                <tr class="border-b-2 sm:border-b-4 border-slate-600 text-white font-bold">
+                                    <td class="p-1 border-r border-indigo-500/20 font-sans text-left pl-1 align-middle">${opSign}</td>
+                                    <td class="p-1 border-r border-indigo-500/20">${bSubArr[1]}</td>
+                                    <td class="p-1 border-r border-indigo-500/20">${bSubArr[2]}</td>
+                                    <td class="p-1">${bSubArr[3]}</td>
+                                </tr>
+                                <tr class="font-bold">
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-ribu" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-ratus" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-puluh" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-sa" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `;
+                }
+            } else if (q.year === 3) {
+                let aStr = String(q.a).padStart(5, ' ');
+                let bStr = String(q.b).padStart(5, ' ');
+                let cStr = q.numCount === 3 ? String(q.c).padStart(5, ' ') : '';
+                let aArr = aStr.split('');
+                let bArr = bStr.split('');
+                let cArr = q.numCount === 3 ? cStr.split('') : [];
+
+                if (q.op === 'tambah') {
+                    let sumU = (q.a % 10) + (q.b % 10) + (q.numCount === 3 ? (q.c % 10) : 0);
+                    let carryPuluhVal = Math.floor(sumU / 10);
+                    
+                    let sumD = Math.floor((q.a % 100) / 10) + Math.floor((q.b % 100) / 10) + (q.numCount === 3 ? Math.floor((q.c % 100) / 10) : 0) + carryPuluhVal;
+                    let carryRatusVal = Math.floor(sumD / 10);
+                    
+                    let sumH = Math.floor((q.a % 1000) / 100) + Math.floor((q.b % 1000) / 100) + (q.numCount === 3 ? Math.floor((q.c % 1000) / 100) : 0) + carryRatusVal;
+                    let carryRibuVal = Math.floor(sumH / 10);
+
+                    let sumTh = Math.floor(q.a / 1000) + Math.floor(q.b / 1000) + (q.numCount === 3 ? Math.floor(q.c / 1000) : 0) + carryRibuVal;
+                    let carryPuluhRibuVal = Math.floor(sumTh / 10);
+
+                    let needPuluhCarry = carryPuluhVal > 0;
+                    let needRatusCarry = carryRatusVal > 0;
+                    let needRibuCarry = carryRibuVal > 0;
+                    let needPuluhRibuCarry = carryPuluhRibuVal > 0;
+                    let hasAnyCarry = needPuluhCarry || needRatusCarry || needRibuCarry || needPuluhRibuCarry;
+
+                    let carryRowHtml = '';
+                    if (hasAnyCarry) {
+                        carryRowHtml = `
+                            <tr class="border-b border-indigo-500/20 bg-slate-900/40 text-center">
+                                <td class="p-0.5 border-r border-indigo-500/20">${needPuluhRibuCarry ? `<input type="text" maxlength="1" readonly onclick="focusCell(this)" id="carry-puluhribu" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg font-bold text-center cursor-pointer focus:outline-none text-xs patch-box-top-styled" placeholder=" ">` : ''}</td>
+                                <td class="p-0.5 border-r border-indigo-500/20">${needRibuCarry ? `<input type="text" maxlength="1" readonly onclick="focusCell(this)" id="carry-ribu" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg font-bold text-center cursor-pointer focus:outline-none text-xs patch-box-top-styled" placeholder=" ">` : ''}</td>
+                                <td class="p-0.5 border-r border-indigo-500/20">${needRatusCarry ? `<input type="text" maxlength="1" readonly onclick="focusCell(this)" id="carry-ratus" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg font-bold text-center cursor-pointer focus:outline-none text-xs patch-box-top-styled" placeholder=" ">` : ''}</td>
+                                <td class="p-0.5 border-r border-indigo-500/20">${needPuluhCarry ? `<input type="text" maxlength="1" readonly onclick="focusCell(this)" id="carry-puluh" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg font-bold text-center cursor-pointer focus:outline-none text-xs patch-box-top-styled" placeholder=" ">` : ''}</td>
+                                <td class="p-0.5"></td>
+                            </tr>
+                        `;
+                    }
+
+                    let rowsDataHtml = `
+                        <tr class="border-b border-indigo-500/20 text-white font-bold">
+                            <td class="p-1.5 border-r border-indigo-500/20">${aArr[0]}</td>
+                            <td class="p-1.5 border-r border-indigo-500/20">${aArr[1]}</td>
+                            <td class="p-1.5 border-r border-indigo-500/20">${aArr[2]}</td>
+                            <td class="p-1.5 border-r border-indigo-500/20">${aArr[3]}</td>
+                            <td class="p-1.5">${aArr[4]}</td>
+                        </tr>
+                    `;
+                    if (q.numCount === 3) {
+                        rowsDataHtml += `
+                            <tr class="border-b border-indigo-500/20 text-white font-bold">
+                                <td class="p-1.5 border-r border-indigo-500/20">${bArr[0]}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${bArr[1]}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${bArr[2]}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${bArr[3]}</td>
+                                <td class="p-1.5">${bArr[4]}</td>
+                            </tr>
+                            <tr class="border-b border-indigo-500/20 text-white font-bold">
+                                <td class="p-1.5 border-r border-indigo-500/20 font-sans text-left pl-2 align-middle text-indigo-400">+</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${cArr[1]}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${cArr[2]}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${cArr[3]}</td>
+                                <td class="p-1.5">${cArr[4]}</td>
+                            </tr>
+                        `;
+                    } else {
+                        rowsDataHtml += `
+                            <tr class="border-b-2 sm:border-b-4 border-slate-600 text-white font-bold">
+                                <td class="p-1.5 border-r border-indigo-500/20 font-sans text-left pl-2 align-middle">${opSign}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${bArr[1]}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${bArr[2]}</td>
+                                <td class="p-1.5 border-r border-indigo-500/20">${bArr[3]}</td>
+                                <td class="p-1.5">${bArr[4]}</td>
+                            </tr>
+                        `;
+                    }
+                    if (q.numCount === 3) {
+                        rowsDataHtml += `
+                            <tr class="border-b-2 sm:border-b-4 border-slate-600 text-white font-bold">
+                                <td colspan="5" class="p-0.5 border-t border-indigo-500/30"></td>
+                            </tr>
+                        `;
+                    }
+
+                    tableHtml = `
+                        <table class="w-full text-center font-mono text-xs sm:text-sm border-collapse">
+                            <thead>
+                                <tr class="text-[8px] sm:text-[9px] text-slate-400 font-sans border-b border-indigo-500/30 bg-slate-950/60">
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/20">P. RIBU</th>
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/20">RIBU</th>
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/20">RATUS</th>
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/20">PULUH</th>
+                                    <th class="py-0.5 px-0.5">SA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${carryRowHtml}
+                                ${rowsDataHtml}
+                                <tr class="font-bold">
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-puluhribu" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-ribu" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-ratus" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-puluh" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-sa" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `;
+                } else {
+                    // TAHUN 3 TOLAK — GUNA KONSEP & CARA PAPAR TAHUN 2.
+                    // Bezanya: Tahun 3 menggunakan 4 digit (RIBU | RATUS | PULUH | SA).
+                    // P.RIBU dikekalkan sebagai ruang tambahan sahaja.
+                    const uA = q.a % 10;
+                    const uB = q.b % 10;
+                    const needSaBorrow = uA < uB;
+
+                    const dA = Math.floor((q.a % 100) / 10);
+                    const dB = Math.floor((q.b % 100) / 10);
+                    const adjDA = dA - (needSaBorrow ? 1 : 0);
+                    const needPuluhBorrow = adjDA < dB;
+
+                    const hA = Math.floor((q.a % 1000) / 100);
+                    const hB = Math.floor((q.b % 1000) / 100);
+                    const adjHA = hA - (needPuluhBorrow ? 1 : 0);
+                    const needRatusBorrow = adjHA < hB;
+
+                    const thA = Math.floor(q.a / 1000);
+                    const thB = Math.floor(q.b / 1000);
+                    const adjThA = thA - (needRatusBorrow ? 1 : 0);
+                    const needRibuBorrow = adjThA < thB;
+
+                    // Untuk sementara, sama seperti Tahun 2: kotak hanya pada
+                    // lajur yang benar-benar menerima pinjaman.
+                    let aSubArr = String(q.a).padStart(4, ' ').split('');
+                    let bSubArr = String(q.b).padStart(4, ' ').split('');
+
+                    let borrowBoxSaHtml = needSaBorrow
+                        ? `<input type="text" maxlength="2" readonly onclick="focusCell(this)" id="borrow-in-sa" class="w-7 h-5 sm:w-8 sm:h-6 rounded font-bold text-center cursor-pointer focus:outline-none shadow mx-auto block text-[10px] patch-box-top-styled" placeholder=" ">`
+                        : '';
+                    let borrowBoxPuluhHtml = needPuluhBorrow
+                        ? `<input type="text" maxlength="2" readonly onclick="focusCell(this)" id="borrow-in-puluh" class="w-7 h-5 sm:w-8 sm:h-6 rounded font-bold text-center cursor-pointer focus:outline-none shadow mx-auto block text-[10px] patch-box-top-styled" placeholder=" ">`
+                        : '';
+                    let borrowBoxRatusHtml = needRatusBorrow
+                        ? `<input type="text" maxlength="2" readonly onclick="focusCell(this)" id="borrow-in-ratus" class="w-7 h-5 sm:w-8 sm:h-6 rounded font-bold text-center cursor-pointer focus:outline-none shadow mx-auto block text-[10px] patch-box-top-styled" placeholder=" ">`
+                        : '';
+                    let borrowBoxRibuHtml = needRibuBorrow
+                        ? `<input type="text" maxlength="2" readonly onclick="focusCell(this)" id="borrow-in-ribu" class="w-7 h-5 sm:w-8 sm:h-6 rounded font-bold text-center cursor-pointer focus:outline-none shadow mx-auto block text-[10px] patch-box-top-styled" placeholder=" ">`
+                        : '';
+
+                    let borrowRowHtml = `
+                        <tr class="border-b border-indigo-500/20 bg-slate-900/40 text-center text-[10px]">
+                            <td class="p-0.5 border-r border-indigo-500/20"></td>
+                            <td class="p-0.5 border-r border-indigo-500/20">${borrowBoxRibuHtml}</td>
+                            <td class="p-0.5 border-r border-indigo-500/20">${borrowBoxRatusHtml}</td>
+                            <td class="p-0.5 border-r border-indigo-500/20">${borrowBoxPuluhHtml}</td>
+                            <td class="p-0.5">${borrowBoxSaHtml}</td>
+                        </tr>
+                    `;
+
+                    tableHtml = `
+                        <table class="w-full text-center font-mono text-xs sm:text-sm border-collapse">
+                            <thead>
+                                <tr class="text-[8px] sm:text-[9px] text-slate-400 font-sans border-b border-indigo-500/30 bg-slate-950/60">
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/25">P. RIBU</th>
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/25">RIBU</th>
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/25">RATUS</th>
+                                    <th class="py-0.5 px-0.5 border-r border-indigo-500/25">PULUH</th>
+                                    <th class="py-0.5 px-0.5">SA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${borrowRowHtml}
+                                <tr class="border-b border-indigo-500/20 text-white font-bold">
+                                    <td class="p-1 border-r border-indigo-500/20"></td>
+                                    <td class="p-1 border-r border-indigo-500/20" id="row-proses-ribu"><span id="digit-ribu-val">${aSubArr[0]}</span></td>
+                                    <td class="p-1 border-r border-indigo-500/20" id="row-proses-ratus"><span id="digit-ratus-val">${aSubArr[1]}</span></td>
+                                    <td class="p-1 border-r border-indigo-500/20" id="row-proses-puluh"><span id="digit-puluh-val">${aSubArr[2]}</span></td>
+                                    <td class="p-1" id="row-proses-sa"><span id="digit-sa-val">${aSubArr[3]}</span></td>
+                                </tr>
+                                <tr class="border-b-2 sm:border-b-4 border-slate-600 text-white font-bold">
+                                    <td class="p-1 border-r border-indigo-500/20 font-sans text-left pl-1 align-middle">${opSign}</td>
+                                    <td class="p-1 border-r border-indigo-500/20">${bSubArr[0]}</td>
+                                    <td class="p-1 border-r border-indigo-500/20">${bSubArr[1]}</td>
+                                    <td class="p-1 border-r border-indigo-500/20">${bSubArr[2]}</td>
+                                    <td class="p-1">${bSubArr[3]}</td>
+                                </tr>
+                                <tr class="font-bold">
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-puluhribu" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-ribu" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-ratus" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1 border-r border-indigo-500/20"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-puluh" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                    <td class="p-1"><input type="text" maxlength="1" readonly onclick="focusCell(this)" id="ans-sa" class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-center cursor-pointer focus:outline-none shadow-inner text-xs patch-box-bottom-styled" placeholder="?"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `;
+                }
+            }
+
+            view.innerHTML = `
+                <div class="flex flex-col h-full justify-between">
+                    <div class="shrink-0">
+                        <div class="flex items-center justify-between text-[11px] sm:text-xs font-bold bg-slate-950/60 p-1.5 sm:p-2 rounded-xl mb-1.5 border border-indigo-500/30">
+                            <span class="text-indigo-300">📚 Tahun ${currentYear} (Aras ${currentLevel})</span>
+                            <span class="text-accent">❓ Soalan ${currentQuestionIdx + 1}/${questionLimit}</span>
+                        </div>
+
+                        <div class="bg-slate-950/80 border-2 border-indigo-500/40 p-2 sm:p-3 rounded-2xl shadow-xl flex flex-col items-center overflow-x-auto">
+                            <span class="text-[10px] sm:text-[11px] text-indigo-300 mb-1 font-bold text-center">Isi Kotak Pengiraan & Jawapan Bentuk Lazim</span>
+                            ${tableHtml}
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950/95 border border-indigo-500/40 p-1.5 sm:p-2 rounded-2xl my-1 shadow-lg max-w-xs mx-auto w-full shrink-0">
+                        <div class="text-[9px] sm:text-[10px] text-center font-bold text-indigo-300 mb-1 uppercase tracking-wider">PILIH NOMBOR</div>
+                        <div class="grid grid-cols-3 gap-1 sm:gap-1.5">
+                            <button onclick="handleKeypadPress(1, this)" class="keypad-num-btn text-white font-display text-base sm:text-lg font-bold py-1.5 sm:py-2 rounded-xl text-center">1</button>
+                            <button onclick="handleKeypadPress(2, this)" class="keypad-num-btn text-white font-display text-base sm:text-lg font-bold py-1.5 sm:py-2 rounded-xl text-center">2</button>
+                            <button onclick="handleKeypadPress(3, this)" class="keypad-num-btn text-white font-display text-base sm:text-lg font-bold py-1.5 sm:py-2 rounded-xl text-center">3</button>
+                            <button onclick="handleKeypadPress(4, this)" class="keypad-num-btn text-white font-display text-base sm:text-lg font-bold py-1.5 sm:py-2 rounded-xl text-center">4</button>
+                            <button onclick="handleKeypadPress(5, this)" class="keypad-num-btn text-white font-display text-base sm:text-lg font-bold py-1.5 sm:py-2 rounded-xl text-center">5</button>
+                            <button onclick="handleKeypadPress(6, this)" class="keypad-num-btn text-white font-display text-base sm:text-lg font-bold py-1.5 sm:py-2 rounded-xl text-center">6</button>
+                            <button onclick="handleKeypadPress(7, this)" class="keypad-num-btn text-white font-display text-base sm:text-lg font-bold py-1.5 sm:py-2 rounded-xl text-center">7</button>
+                            <button onclick="handleKeypadPress(8, this)" class="keypad-num-btn text-white font-display text-base sm:text-lg font-bold py-1.5 sm:py-2 rounded-xl text-center">8</button>
+                            <button onclick="handleKeypadPress(9, this)" class="keypad-num-btn text-white font-display text-base sm:text-lg font-bold py-1.5 sm:py-2 rounded-xl text-center">9</button>
+                            <button onclick="handleKeypadPress(0, this)" class="keypad-num-btn text-white font-display text-base sm:text-lg font-bold py-1.5 sm:py-2 rounded-xl text-center">0</button>
+                            <button onclick="handleDeletePress(this)" class="keypad-del-btn text-white font-display text-xs font-bold py-1.5 sm:py-2 rounded-xl text-center flex items-center justify-center">⌫ PADAM</button>
+                            <button onclick="handleOkPress(this)" class="keypad-ok-btn text-white font-display text-xs font-bold py-1.5 sm:py-2 rounded-xl text-center flex items-center justify-center">OK</button>
+                        </div>
+                    </div>
+
+                    <div class="shrink-0 pt-0.5 pb-1">
+                        <button onclick="checkAnswer()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-display font-bold text-sm sm:text-base py-2.5 sm:py-3 rounded-2xl shadow-lg transition transform active:scale-95 border-b-4 border-emerald-800">
+                            ✨ SEMAK JAWAPAN
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const defaultBox = document.getElementById('ans-sa');
+                if (defaultBox) focusCell(defaultBox);
+            }, 50);
+        }
+
+        function focusCell(inputElem) {
+            document.querySelectorAll('#app-view input').forEach(el => {
+                el.classList.remove('ring-2', 'ring-amber-400');
+            });
+            activeInputCell = inputElem;
+            activeInputCell.classList.add('ring-2', 'ring-amber-400');
+        }
+
+        function handleKeypadPress(num, btnElem) {
+            btnElem.classList.add('pressed');
+            setTimeout(() => btnElem.classList.remove('pressed'), 130);
+            
+            playNumberClickSound();
+            inputKeypadNumber(num);
+        }
+
+        function handleDeletePress(btnElem) {
+            btnElem.classList.add('pressed');
+            setTimeout(() => btnElem.classList.remove('pressed'), 130);
+            
+            playDeleteSound();
+            inputKeypadDelete();
+        }
+
+        function handleOkPress(btnElem) {
+            btnElem.classList.add('pressed');
+            setTimeout(() => btnElem.classList.remove('pressed'), 130);
+            
+            playNumberClickSound();
+            keypadOk();
+        }
+
+        function inputKeypadNumber(num) {
+            if (!activeInputCell) {
+                activeInputCell = document.getElementById('ans-sa');
+            }
+            if (activeInputCell) {
+                if (activeInputCell.id === 'borrow-in-sa' || activeInputCell.id === 'borrow-in-puluh' || activeInputCell.id === 'borrow-in-ratus' || activeInputCell.id === 'borrow-in-ribu') {
+                    let currentVal = activeInputCell.value || '';
+                    if (currentVal.length >= 2) {
+                        currentVal = String(num);
+                    } else {
+                        currentVal += num;
+                    }
+                    activeInputCell.value = currentVal;
+
+                    if (activeInputCell.value === '10') {
+                        triggerBorrowVisual(activeInputCell.id);
+                    } else {
+                        revertBorrowVisual(activeInputCell.id);
+                    }
+                } else {
+                    let currentVal = activeInputCell.value || '';
+                    if (activeInputCell.maxLength === 2 && currentVal.length < 2) {
+                        activeInputCell.value = currentVal + num;
+                    } else {
+                        activeInputCell.value = String(num);
+                    }
+                }
+
+                activeInputCell.classList.add('bg-indigo-950');
+                
+                const allInputs = Array.from(document.querySelectorAll('#app-view input'));
+                const idx = allInputs.indexOf(activeInputCell);
+                if (idx !== -1 && idx + 1 < allInputs.length && activeInputCell.value.length === (activeInputCell.maxLength || 1)) {
+                    focusCell(allInputs[idx + 1]);
+                }
+            }
+        }
+
+        function triggerBorrowVisual(inputId) {
+            const q = activeQuestionData;
+            let aStr = String(q.a).padStart(4, ' ');
+            let aArr = aStr.split('');
+
+            // KONSEP PINJAMAN: digit yang menerima 10 KEKAL.
+            // Yang dipotong hanya 1 nilai tempat pada lajur pemberi pinjaman.
+            // Contoh SA: 10 diletak dalam kotak pinjaman di atas digit 1;
+            // digit 1 TIDAK dipotong. Kiraan ialah 10 + 1 - digit bawah.
+            const box = document.getElementById(inputId);
+            if (box) box.classList.add('borrow-used-strike');
+
+            if (inputId === 'borrow-in-sa') {
+                const pDisp = document.getElementById('digit-puluh-val');
+                const lenderPuluh = Math.floor((q.a % 100) / 10);
+
+                // CASCADE KHAS: jika Puluh asal = 0, SA yang meminjam
+                // perlu mengambil 1 Puluh daripada Ratus terlebih dahulu.
+                // Jadi Puluh menerima 10 secara automatik, 10 itu digunakan
+                // untuk memberi 1 Puluh kepada SA, lalu baki Puluh = 9.
+                if (lenderPuluh === 0) {
+                    // AUTO KHAS: SA perlu pinjam tetapi Puluh = 0.
+                    // 1) SA mendapat 10.
+                    // 2) Kotak Puluh AUTO diisi 10.
+                    // 3) 10 di kotak Puluh dipalang dan baki 9 ditunjukkan.
+                    // 4) Auto tolak 1 daripada Ratus.
+                    // Ini HANYA berlaku apabila SA meminjam DAN Puluh asal = 0.
+                    const autoPuluh = document.getElementById('borrow-in-puluh');
+                    if (autoPuluh) {
+                        autoPuluh.value = '10';
+                        autoPuluh.classList.add('borrow-auto-filled', 'borrow-used-strike', 'bg-indigo-950');
+
+                        // Kotak AUTO Puluh mesti sendiri menunjukkan 10 dipalang -> 9.
+                        // Input sebenar disorok supaya nombor tidak bertindih.
+                        autoPuluh.style.display = 'none';
+                        const puluhBox = autoPuluh.parentElement;
+                        if (puluhBox && !puluhBox.querySelector('.auto-puluh-borrow-visual')) {
+                            const visual = document.createElement('span');
+                            visual.className = 'auto-puluh-borrow-visual';
+                            visual.innerHTML = '<span class="strike-red">10</span><span class="text-emerald-400 font-bold ml-1">9</span>';
+                            visual.style.cssText = 'display:flex; align-items:center; justify-content:center; width:2.7rem; height:1.5rem; margin:0 auto; border:2px solid #38bdf8; border-radius:0.25rem; font-size:0.7rem; font-weight:700; background:transparent; box-sizing:border-box; pointer-events:none; white-space:nowrap;';
+                            puluhBox.appendChild(visual);
+                        }
+                    }
+
+                    // PENTING:
+                    // Puluh asal = 0 mesti KEKAL 0 dan TIADA palang/perubahan.
+                    // Nilai 10 -> 9 hanya berada di KOTAK PINJAMAN Puluh di atas.
+                    if (pDisp) {
+                        pDisp.textContent = '0';
+                    }
+
+                    // Ratus menjadi pemberi pinjaman: Ratus - 1.
+                    // Jangan buat cascade lain di sini.
+                    const lenderRatus = Math.floor((q.a % 1000) / 100);
+                    const hDisp = document.getElementById('digit-ratus-val');
+                    if (lenderRatus > 0 && hDisp) {
+                        hDisp.innerHTML = `<span class="strike-red">${lenderRatus}</span> <span class="text-emerald-400 font-bold ml-1">${lenderRatus - 1}</span>`;
+                    }
+                } else {
+                    if (pDisp) {
+                        pDisp.innerHTML = `<span class="strike-red">${aArr[2]}</span> <span class="text-emerald-400 font-bold ml-1">${lenderPuluh - 1}</span>`;
+                    }
+                }
+                // SA asal sengaja TIDAK diubah/dipotong.
+            } else if (inputId === 'borrow-in-puluh') {
+                const hDisp = document.getElementById('digit-ratus-val');
+                const lenderRatus = Math.floor((q.a % 1000) / 100);
+
+                // KES KHAS: Ratus asal = 0.
+                // Puluh yang perlu pinjam tidak boleh terus menjadikan Ratus -1.
+                // Ratus mesti menerima 10 daripada Ribu dahulu, kemudian:
+                // Ratus: 10 -> 9 (10 dipalang, baki 9)
+                // Ribu: asal -> asal - 1
+                const autoRatus = document.getElementById('borrow-in-ratus');
+
+                if (lenderRatus === 0) {
+                    if (autoRatus) {
+                        autoRatus.value = '10';
+                        autoRatus.classList.add('borrow-auto-filled', 'borrow-used-strike', 'bg-indigo-950');
+
+                        // Kotak AUTO Ratus mesti sendiri menunjukkan 10 dipalang -> 9.
+                        // Input sebenar disorok supaya 0 di baris Ratus kekal KOSONG
+                        // dan tiada nombor bertindih.
+                        autoRatus.style.display = 'none';
+                        const ratusBox = autoRatus.parentElement;
+                        if (ratusBox && !ratusBox.querySelector('.auto-ratus-borrow-visual')) {
+                            const visual = document.createElement('span');
+                            visual.className = 'auto-ratus-borrow-visual';
+                            visual.innerHTML = '<span class="strike-red">10</span><span class="text-emerald-400 font-bold ml-1">9</span>';
+                            visual.style.cssText = 'display:flex; align-items:center; justify-content:center; width:2.7rem; height:1.5rem; margin:0 auto; border:2px solid #38bdf8; border-radius:0.25rem; font-size:0.7rem; font-weight:700; background:transparent; box-sizing:border-box; pointer-events:none; white-space:nowrap;';
+                            ratusBox.appendChild(visual);
+                        }
+                    }
+
+                    // Ratus asal = 0: ruang nombor asal kekal KOSONG.
+                    // Nilai 10 -> 9 hanya dipaparkan pada kotak pinjaman Ratus.
+                    if (hDisp) {
+                        hDisp.textContent = '';
+                    }
+
+                    const lenderRibu = Math.floor(q.a / 1000);
+                    const thDisp = document.getElementById('digit-ribu-val');
+                    if (lenderRibu > 0 && thDisp) {
+                        thDisp.innerHTML = `<span class="strike-red">${lenderRibu}</span> <span class="text-emerald-400 font-bold ml-1">${lenderRibu - 1}</span>`;
+                    }
+                } else {
+                    if (hDisp) {
+                        hDisp.innerHTML = `<span class="strike-red">${aArr[1]}</span> <span class="text-emerald-400 font-bold ml-1">${lenderRatus - 1}</span>`;
+                    }
+                }
+                // Puluh asal juga KEKAL; 10 dalam kotak ialah nilai pinjaman.
+            } else if (inputId === 'borrow-in-ratus') {
+                const thDisp = document.getElementById('digit-ribu-val');
+                if (thDisp) {
+                    const lender = Math.floor(q.a / 1000);
+                    thDisp.innerHTML = `<span class="strike-red">${aArr[0]}</span> <span class="text-emerald-400 font-bold ml-1">${lender - 1}</span>`;
+                }
+                // Ratus asal KEKAL; 10 dalam kotak ialah nilai pinjaman.
+            }
+        }
+
+        function revertBorrowVisual(inputId) {
+            const q = activeQuestionData;
+            let aStr = String(q.a).padStart(4, ' ');
+            let aArr = aStr.split('');
+
+            if (inputId === 'borrow-in-sa') {
+                const pDisp = document.getElementById('digit-puluh-val');
+                if (pDisp) pDisp.innerHTML = aArr[2];
+            } else if (inputId === 'borrow-in-puluh') {
+                const hDisp = document.getElementById('digit-ratus-val');
+                if (hDisp) hDisp.innerHTML = aArr[1];
+            } else if (inputId === 'borrow-in-ratus') {
+                const thDisp = document.getElementById('digit-ribu-val');
+                if (thDisp) thDisp.innerHTML = aArr[0];
+            }
+        }
+
+        function inputKeypadDelete() {
+            if (activeInputCell) {
+                activeInputCell.value = '';
+                activeInputCell.classList.remove('bg-indigo-950');
+
+                if (activeInputCell.id === 'borrow-in-sa' || activeInputCell.id === 'borrow-in-puluh' || activeInputCell.id === 'borrow-in-ratus' || activeInputCell.id === 'borrow-in-ribu') {
+                    activeInputCell.classList.remove('borrow-used-strike', 'borrow-auto-filled');
+                    revertBorrowVisual(activeInputCell.id);
+                    // Jika SA dibuang, kosongkan semula kotak cascade automatik.
+                    if (activeInputCell.id === 'borrow-in-sa') {
+                        ['borrow-in-puluh','borrow-in-ratus','borrow-in-ribu'].forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el && el.classList.contains('borrow-auto-filled')) {
+                                el.value = '';
+                                el.classList.remove('borrow-used-strike','borrow-auto-filled','bg-indigo-950');
+                                el.style.color = '';
+                                el.style.display = '';
+                                const box = el.parentElement;
+                                const visual = box && box.querySelector('.auto-ratus-borrow-visual, .auto-puluh-borrow-visual');
+                                if (visual) visual.remove();
+                            }
+                        });
+                        const q = activeQuestionData;
+                        const pDisp = document.getElementById('digit-puluh-val');
+                        const hDisp = document.getElementById('digit-ratus-val');
+                        const thDisp = document.getElementById('digit-ribu-val');
+                        if (pDisp) pDisp.textContent = String(Math.floor((q.a % 100) / 10));
+                        if (hDisp) hDisp.textContent = String(Math.floor((q.a % 1000) / 100));
+                        if (thDisp) thDisp.textContent = String(Math.floor(q.a / 1000));
+                    } else if (activeInputCell.id === 'borrow-in-puluh') {
+                        // Buang visual AUTO Puluh (10 dipalang -> 9).
+                        const puluhBox = activeInputCell.parentElement;
+                        const puluhVisual = puluhBox && puluhBox.querySelector('.auto-puluh-borrow-visual');
+                        if (puluhVisual) puluhVisual.remove();
+                        activeInputCell.style.display = '';
+
+                        // Jika Ratus diisi automatik kerana Ratus asal = 0,
+                        // padam semula paparan cascade apabila Puluh dipadam.
+                        const autoRatus = document.getElementById('borrow-in-ratus');
+                        if (autoRatus && autoRatus.classList.contains('borrow-auto-filled')) {
+                            autoRatus.value = '';
+                            autoRatus.classList.remove('borrow-used-strike','borrow-auto-filled','bg-indigo-950');
+                            autoRatus.style.color = '';
+                            autoRatus.style.display = '';
+                            const ratusBox = autoRatus.parentElement;
+                            const visual = ratusBox && ratusBox.querySelector('.auto-ratus-borrow-visual');
+                            if (visual) visual.remove();
+                        }
+                        const q = activeQuestionData;
+                        const hDisp = document.getElementById('digit-ratus-val');
+                        const thDisp = document.getElementById('digit-ribu-val');
+                        if (hDisp) hDisp.textContent = String(Math.floor((q.a % 1000) / 100));
+                        if (thDisp) thDisp.textContent = String(Math.floor(q.a / 1000));
+                    }
+                }
+            }
+        }
+
+        function keypadOk() {
+            if (activeInputCell) {
+                activeInputCell.classList.remove('ring-2', 'ring-amber-400');
+            }
+        }
+
+        function checkVisualAnswer(val) {
+            const q = activeQuestionData;
+            if (val === q.result) {
+                playCorrectSound();
+                gameState.score += 10;
+                gameState.streak++;
+                if (gameState.streak > gameState.maxStreak) gameState.maxStreak = gameState.streak;
+                gameState.correctCount++;
+                const rewardText = showCorrectReward();
+                saveGame();
+                showModal("BETUL! 🎉", "Tahniah! Pilihan jawapan anda tepat sekali.<br><br>" + rewardText, "⭐", "Seterusnya", () => {
+                    currentQuestionIdx++;
+                    if (currentQuestionIdx >= questionLimit) {
+                        renderStageComplete();
+                    } else {
+                        activeQuestionData = generateQuestionForYear(currentOperation, currentYear, currentLevel, currentQuestionIdx);
+                        renderQuestionView();
+                    }
+                });
+            } else {
+                playWrongSound();
+                gameState.streak = 0;
+                gameState.wrongCount++;
+                saveGame();
+                showModal("BELUM BETUL! ❌", "Cuba semak semula bilangan objek baki yang tidak dipotong.", "🔄", "Cuba Lagi");
+            }
+        }
+
+        function checkAnswer() {
+            const q = activeQuestionData;
+            let isCorrect = true;
+            let errorMsg = "";
+
+            if (q.year === 1 && q.level === 2 && q.op === 'tambah' && currentQuestionIdx < 5) {
+                let ansPuluhElem = document.getElementById('ans-puluh');
+                let ansSaElem = document.getElementById('ans-sa');
+                let ansPuluh = ansPuluhElem ? ansPuluhElem.value : '';
+                let ansSa = ansSaElem ? ansSaElem.value : '';
+
+                let totalSum = q.a + q.b;
+                let hasPuluhBox = totalSum >= 10;
+
+                if (ansSa === '' || (hasPuluhBox && ansPuluh === '')) {
+                    showModal("Belum Lengkap", "Sila isi semua kotak jawapan yang diperlukan.", "⚠️", "OK");
+                    return;
+                }
+
+                let userResultNum = parseInt((hasPuluhBox ? (ansPuluh + ansSa) : ansSa), 10);
+                if (userResultNum !== q.result) {
+                    isCorrect = false;
+                    errorMsg = "Jawapan akhir belum tepat.";
+                }
+
+                if (isCorrect) {
+                    playCorrectSound();
+                    gameState.score += 10;
+                    gameState.streak++;
+                    if (gameState.streak > gameState.maxStreak) gameState.maxStreak = gameState.streak;
+                    gameState.correctCount++;
+                    checkRewards();
+                    const rewardText = showCorrectReward();
+                    saveGame();
+
+                    showModal("BETUL! 🎉", "Hebat! Pengiraan anda tepat sekali.<br><br>" + rewardText, "⭐", "Seterusnya", () => {
+                        currentQuestionIdx++;
+                        if (currentQuestionIdx >= questionLimit) {
+                            renderStageComplete();
+                        } else {
+                            activeQuestionData = generateQuestionForYear(currentOperation, currentYear, currentLevel, currentQuestionIdx);
+                            renderQuestionView();
+                        }
+                    });
+                } else {
+                    playWrongSound();
+                    gameState.streak = 0;
+                    gameState.wrongCount++;
+                    saveGame();
+                    showModal("BELUM BETUL! ❌", errorMsg + "<br><br><b>Semak semula pengiraan anda.</b>", "🔄", "Cuba Lagi");
+                }
+                return;
+            }
+
+            if (q.year === 1 && q.level === 2 && q.op === 'tambah' && currentQuestionIdx >= 5) {
+                let ansPuluhElem = document.getElementById('ans-puluh');
+                let ansSaElem = document.getElementById('ans-sa');
+                let ansPuluh = ansPuluhElem ? ansPuluhElem.value : '';
+                let ansSa = ansSaElem ? ansSaElem.value : '';
+
+                if (ansPuluh === '' || ansSa === '') {
+                    showModal("Belum Lengkap", "Sila isi semua kotak jawapan Puluh dan Sa.", "⚠️", "OK");
+                    return;
+                }
+
+                let userResultNum = parseInt(ansPuluh + ansSa, 10);
+                if (userResultNum !== q.result) {
+                    isCorrect = false;
+                    errorMsg = "Jawapan bentuk lazim belum tepat.";
+                }
+
+                if (isCorrect) {
+                    playCorrectSound();
+                    gameState.score += 10;
+                    gameState.streak++;
+                    if (gameState.streak > gameState.maxStreak) gameState.maxStreak = gameState.streak;
+                    gameState.correctCount++;
+                    checkRewards();
+                    const rewardText = showCorrectReward();
+                    saveGame();
+
+                    showModal("BETUL! 🎉", "Hebat! Pengiraan anda tepat sekali.<br><br>" + rewardText, "⭐", "Seterusnya", () => {
+                        currentQuestionIdx++;
+                        if (currentQuestionIdx >= questionLimit) {
+                            renderStageComplete();
+                        } else {
+                            activeQuestionData = generateQuestionForYear(currentOperation, currentYear, currentLevel, currentQuestionIdx);
+                            renderQuestionView();
+                        }
+                    });
+                } else {
+                    playWrongSound();
+                    gameState.streak = 0;
+                    gameState.wrongCount++;
+                    saveGame();
+                    showModal("BELUM BETUL! ❌", errorMsg + "<br><br><b>Semak semula pengiraan anda.</b>", "🔄", "Cuba Lagi");
+                }
+                return;
+            }
+
+            if (q.year === 1 && q.level === 2 && q.op === 'tolak' && currentQuestionIdx < 5) {
+                const ansSaElem = document.getElementById('ans-sa');
+                const ansSa = ansSaElem ? ansSaElem.value : '';
+                if (ansSa === '') {
+                    showModal("Belum Lengkap", "Sila isi kotak jawapan SA.", "⚠️", "OK");
+                    return;
+                }
+                if (parseInt(ansSa, 10) !== q.result) {
+                    isCorrect = false;
+                    errorMsg = "Jawapan akhir belum tepat.";
+                }
+                if (isCorrect) {
+                    playCorrectSound();
+                    gameState.score += 10;
+                    gameState.streak++;
+                    if (gameState.streak > gameState.maxStreak) gameState.maxStreak = gameState.streak;
+                    gameState.correctCount++;
+                    checkRewards();
+                    const rewardText = showCorrectReward();
+                    saveGame();
+                    showModal("BETUL! 🎉", "Hebat! Pengiraan anda tepat sekali.<br><br>" + rewardText, "⭐", "Seterusnya", () => {
+                        currentQuestionIdx++;
+                        if (currentQuestionIdx >= questionLimit) renderStageComplete();
+                        else {
+                            activeQuestionData = generateQuestionForYear(currentOperation, currentYear, currentLevel, currentQuestionIdx);
+                            renderQuestionView();
+                        }
+                    });
+                } else {
+                    playWrongSound();
+                    gameState.streak = 0;
+                    gameState.wrongCount++;
+                    saveGame();
+                    showModal("BELUM BETUL! ❌", errorMsg + "<br><br><b>Semak semula pengiraan anda.</b>", "🔄", "Cuba Lagi");
+                }
+                return;
+            }
+
+            // TAHUN 1: Aras 2 (soalan 6-10) & Aras 3.
+            // Kedua-duanya hanya menggunakan nilai tempat PULUH dan SA.
+            // Jangan jatuhkan semakan ke blok umum kerana blok umum memerlukan
+            // ans-ratus/ans-ribu yang memang tidak wujud untuk Tahun 1.
+            if (q.year === 1 && ((q.level === 2 && currentQuestionIdx >= 5) || q.level === 3)) {
+                const ansPuluhElem = document.getElementById('ans-puluh');
+                const ansSaElem = document.getElementById('ans-sa');
+                const ansPuluh = ansPuluhElem ? ansPuluhElem.value : '';
+                const ansSa = ansSaElem ? ansSaElem.value : '';
+
+                // Tahun 1 Aras 3: semak nilai jawapan berdasarkan nilai tempat sebenar.
+                // Kotak PULUH yang kosong dianggap 0 supaya jawapan satu digit (contoh 52 - 47 = 5)
+                // tetap diterima. Untuk jawapan dua digit, kedua-dua PULUH dan SA mesti diisi.
+                const expectedResult = Number(q.result);
+                if (ansSa === '' || (expectedResult >= 10 && ansPuluh === '')) {
+                    showModal("Belum Lengkap", "Sila isi kotak jawapan yang diperlukan.", "⚠️", "OK");
+                    return;
+                }
+
+                const userPuluh = ansPuluh === '' ? 0 : Number(ansPuluh);
+                const userSa = Number(ansSa);
+                const userResultNum = userPuluh * 10 + userSa;
+                if (userResultNum !== expectedResult) {
+                    playWrongSound();
+                    gameState.streak = 0;
+                    gameState.wrongCount++;
+                    saveGame();
+                    showModal("BELUM BETUL! ❌", "Jawapan akhir bentuk lazim belum tepat.<br><br><b>Semak semula pengiraan anda.</b>", "🔄", "Cuba Lagi");
+                    return;
+                }
+
+                playCorrectSound();
+                gameState.score += 10;
+                gameState.streak++;
+                if (gameState.streak > gameState.maxStreak) gameState.maxStreak = gameState.streak;
+                gameState.correctCount++;
+                checkRewards();
+                const rewardText = showCorrectReward();
+                saveGame();
+
+                showModal("BETUL! 🎉", "Hebat! Pengiraan anda tepat sekali.<br><br>" + rewardText, "⭐", "Seterusnya", () => {
+                    currentQuestionIdx++;
+                    if (currentQuestionIdx >= questionLimit) {
+                        renderStageComplete();
+                    } else {
+                        activeQuestionData = generateQuestionForYear(currentOperation, currentYear, currentLevel, currentQuestionIdx);
+                        renderQuestionView();
+                    }
+                });
+                return;
+            }
+
+            if (q.year === 2 && q.op === 'tambah') {
+                let sumU = (q.a % 10) + (q.b % 10) + (q.numCount === 3 ? (q.c % 10) : 0);
+                let cPuluhVal = Math.floor(sumU / 10);
+                
+                let sumD = Math.floor((q.a % 100) / 10) + Math.floor((q.b % 100) / 10) + (q.numCount === 3 ? Math.floor((q.c % 100) / 10) : 0) + cPuluhVal;
+                let cRatusVal = Math.floor(sumD / 10);
+
+                if (cPuluhVal > 0) {
+                    let carryPuluhElem = document.getElementById('carry-puluh');
+                    let carryPuluh = parseInt(carryPuluhElem ? carryPuluhElem.value || '0' : '0', 10);
+                    if (carryPuluh !== cPuluhVal) {
+                        isCorrect = false;
+                        errorMsg = "Proses pengumpulan semula (carry) pada nilai tempat Puluh belum tepat!";
+                    }
+                }
+                if (cRatusVal > 0) {
+                    let carryRatusElem = document.getElementById('carry-ratus');
+                    let carryRatus = parseInt(carryRatusElem ? carryRatusElem.value || '0' : '0', 10);
+                    if (carryRatus !== cRatusVal) {
+                        isCorrect = false;
+                        errorMsg = "Proses pengumpulan semula pada Ratus belum tepat!";
+                    }
+                }
+                let sumH = Math.floor((q.a % 1000) / 100) + Math.floor((q.b % 1000) / 100) + (q.numCount === 3 ? Math.floor((q.c % 1000) / 100) : 0) + cRatusVal;
+                let cRibuVal = Math.floor(sumH / 10);
+                if (cRibuVal > 0) {
+                    let carryRibuElem = document.getElementById('carry-ribu');
+                    let carryRibu = parseInt(carryRibuElem ? carryRibuElem.value || '0' : '0', 10);
+                    if (carryRibu !== cRibuVal) {
+                        isCorrect = false;
+                        errorMsg = "Proses pengumpulan semula pada Ribu belum tepat!";
+                    }
+                }
+            } else if (q.year === 3 && q.op === 'tambah') {
+                let sumU = (q.a % 10) + (q.b % 10) + (q.numCount === 3 ? (q.c % 10) : 0);
+                let cPuluhVal = Math.floor(sumU / 10);
+                
+                let sumD = Math.floor((q.a % 100) / 10) + Math.floor((q.b % 100) / 10) + (q.numCount === 3 ? Math.floor((q.c % 100) / 10) : 0) + cPuluhVal;
+                let cRatusVal = Math.floor(sumD / 10);
+                
+                let sumH = Math.floor((q.a % 1000) / 100) + Math.floor((q.b % 1000) / 100) + (q.numCount === 3 ? Math.floor((q.c % 1000) / 100) : 0) + cRatusVal;
+                let cRibuVal = Math.floor(sumH / 10);
+
+                let sumTh = Math.floor(q.a / 1000) + Math.floor(q.b / 1000) + (q.numCount === 3 ? Math.floor(q.c / 1000) : 0) + cRibuVal;
+                let cPuluhRibuVal = Math.floor(sumTh / 10);
+
+                if (cPuluhVal > 0) {
+                    let carryPuluhElem = document.getElementById('carry-puluh');
+                    let carryPuluh = parseInt(carryPuluhElem ? carryPuluhElem.value || '0' : '0', 10);
+                    if (carryPuluh !== cPuluhVal) {
+                        isCorrect = false;
+                        errorMsg = "Proses pengumpulan semula (carry) pada nilai tempat Puluh belum tepat!";
+                    }
+                }
+                if (cRatusVal > 0) {
+                    let carryRatusElem = document.getElementById('carry-ratus');
+                    let carryRatus = parseInt(carryRatusElem ? carryRatusElem.value || '0' : '0', 10);
+                    if (carryRatus !== cRatusVal) {
+                        isCorrect = false;
+                        errorMsg = "Proses pengumpulan semula pada Ratus belum tepat!";
+                    }
+                }
+                if (cRibuVal > 0) {
+                    let carryRibuElem = document.getElementById('carry-ribu');
+                    let carryRibu = parseInt(carryRibuElem ? carryRibuElem.value || '0' : '0', 10);
+                    if (carryRibu !== cRibuVal) {
+                        isCorrect = false;
+                        errorMsg = "Proses pengumpulan semula pada Ribu belum tepat!";
+                    }
+                }
+                if (cPuluhRibuVal > 0) {
+                    let carryPBUElem = document.getElementById('carry-puluhribu');
+                    let carryPBU = parseInt(carryPBUElem ? carryPBUElem.value || '0' : '0', 10);
+                    if (carryPBU !== cPuluhRibuVal) {
+                        isCorrect = false;
+                        errorMsg = "Proses pengumpulan semula pada Puluh Ribu belum tepat!";
+                    }
+                }
+            } else if (q.op === 'tolak' && q.needsCarry) {
+                let uA = q.a % 10;
+                let uB = q.b % 10;
+                if (uA < uB) {
+                    let bInSa = document.getElementById('borrow-in-sa');
+                    if (!bInSa || bInSa.value !== '10') {
+                        isCorrect = false;
+                        errorMsg = "❌ Sila masukkan 10 di ruang pinjaman SA.";
+                    }
+                }
+            }
+
+            let ansSa = document.getElementById('ans-sa').value;
+            let ansPuluh = document.getElementById('ans-puluh').value;
+            let ansRatus = document.getElementById('ans-ratus').value;
+            let ansRibu = (q.year === 2 || q.year === 3) ? document.getElementById('ans-ribu').value : '';
+            let ansPuluhRibu = q.year === 3 ? document.getElementById('ans-puluhribu').value : '';
+
+            if (isCorrect) {
+                if (q.year === 2) {
+                    // RIBU Tahun 2 ialah lajur nilai tempat tambahan; kosong = 0 untuk jawapan < 1000.
+                    const ribuWajib = q.result >= 1000;
+                    if (ansSa === '' || ansPuluh === '' || ansRatus === '' || (ribuWajib && ansRibu === '')) {
+                        showModal("Belum Lengkap", "Sila isi semua kotak jawapan yang diperlukan. Jika jawapan kurang daripada 1000, kotak Ribu boleh dibiarkan kosong.", "⚠️", "OK");
+                        return;
+                    }
+                } else if (ansSa === '' || ansPuluh === '' || ansRatus === '' || (q.year === 3 && (ansRibu === '' || ansPuluhRibu === ''))) {
+                    showModal("Belum Lengkap", "Sila isi semua kotak jawapan di ruang bawah.", "⚠️", "OK");
+                    return;
+                }
+            }
+
+            if (isCorrect) {
+                let userResultNum;
+
+                // TAHUN 3 TOLAK: semak terus berdasarkan empat nilai tempat sebenar.
+                // P.RIBU hanyalah ruang tambahan dan 0 di situ tidak boleh menyebabkan
+                // jawapan 4 digit yang sah (contoh 02148 = 2148) dianggap salah.
+                if (q.year === 3 && q.op === 'tolak') {
+                    const dPuluhribu = Number(ansPuluhRibu || 0);
+                    const dRibu = Number(ansRibu || 0);
+                    const dRatus = Number(ansRatus || 0);
+                    const dPuluh = Number(ansPuluh || 0);
+                    const dSa = Number(ansSa || 0);
+                    userResultNum = dPuluhribu * 10000 + dRibu * 1000 + dRatus * 100 + dPuluh * 10 + dSa;
+                    const expectedResult = Number(q.a) - Number(q.b);
+
+                    if (userResultNum !== expectedResult) {
+                        isCorrect = false;
+                        errorMsg = "Nilai angka jawapan akhir bentuk lazim belum tepat.";
+                    }
+                } else {
+                    let userResultStr = q.year === 3 ? (ansPuluhRibu + ansRibu + ansRatus + ansPuluh + ansSa) : (q.year === 2 ? (ansRibu + ansRatus + ansPuluh + ansSa) : (ansRatus + ansPuluh + ansSa));
+                    userResultNum = parseInt(userResultStr, 10);
+
+                    if (userResultNum !== q.result) {
+                        isCorrect = false;
+                        errorMsg = "Nilai angka jawapan akhir bentuk lazim belum tepat.";
+                    }
+                }
+            }
+
+            if (isCorrect) {
+                playCorrectSound();
+                gameState.score += 10;
+                gameState.streak++;
+                if (gameState.streak > gameState.maxStreak) gameState.maxStreak = gameState.streak;
+                gameState.correctCount++;
+                checkRewards();
+                const rewardText = showCorrectReward();
+                saveGame();
+
+                showModal("BETUL! 🎉", "Hebat! Pengiraan bentuk lazim dan langkah pinjaman anda tepat sekali.<br><br>" + rewardText, "⭐", "Seterusnya", () => {
+                    currentQuestionIdx++;
+                    if (currentQuestionIdx >= questionLimit) {
+                        renderStageComplete();
+                    } else {
+                        activeQuestionData = generateQuestionForYear(currentOperation, currentYear, currentLevel, currentQuestionIdx);
+                        renderQuestionView();
+                    }
+                });
+            } else {
+                playWrongSound();
+                gameState.streak = 0;
+                gameState.wrongCount++;
+                saveGame();
+                showModal("BELUM BETUL! ❌", errorMsg + "<br><br><b>Semak semula langkah pengiraan anda.</b>", "🔄", "Cuba Lagi");
+            }
+        }
+
+        function renderStageComplete() {
+            gameState.achievements = gameState.achievements || {};
+            gameState.achievements.firstMission = true;
+            saveGame();
+            playCorrectSound();
+            toggleHeader(false);
+            const view = document.getElementById('app-view');
+            view.innerHTML = `
+                <div class="flex flex-col h-full items-center justify-center text-center pop-animation">
+                    <span class="text-5xl mb-2">🏆</span>
+                    <h2 class="font-display text-xl sm:text-2xl font-bold text-white mb-1">TAHNIAH, WIRA!</h2>
+                    <p class="text-xs text-emerald-400 font-bold mb-3">Misi Tahun ${currentYear} (Aras ${currentLevel}) Berjaya Diselesaikan!</p>
+
+                    <div class="bg-slate-950/80 border border-indigo-500/30 rounded-2xl p-3.5 w-full max-w-xs space-y-1.5 mb-4 shadow-lg text-xs">
+                        <div class="flex justify-between"><span class="text-slate-400">Skor Diperolehi:</span><span class="font-bold text-accent">+${questionLimit * 10}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Streak Tertinggi:</span><span class="font-bold text-orange-400">🔥 ${gameState.maxStreak}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Betul / Salah:</span><span class="font-bold text-white">${gameState.correctCount} / ${gameState.wrongCount}</span></div>
+                    </div>
+
+                    <div class="flex flex-col w-full max-w-xs space-y-2">
+                        <button onclick="startMissionWithLevel(currentLevel);" class="bg-emerald-600 hover:bg-emerald-500 text-white font-display text-sm py-2.5 px-4 rounded-xl shadow-lg font-bold">
+                            🔄 Main Semula Aras Ini
+                        </button>
+                        <button onclick="goToLevelMenu();" class="bg-indigo-600 hover:bg-indigo-500 text-white font-display text-sm py-2.5 px-4 rounded-xl shadow-lg font-bold">
+                            📜 Pilih Aras Lain
+                        </button>
+                        <button onclick="renderMainMenu();" class="bg-slate-800 hover:bg-slate-700 text-white font-display text-sm py-2 px-4 rounded-xl shadow-lg border border-slate-700">
+                            🏠 Menu Utama
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkRewards() {
+            if (gameState.score >= 50) gameState.rewards.pejuangTambah = true;
+            if (gameState.correctCount >= 5) gameState.rewards.masterCarry = true;
+            if (gameState.maxStreak >= 5) gameState.rewards.wiraMatematik = true;
+            if (gameState.score >= 150) gameState.rewards.masterLazim = true;
+        }
+
+        function getWiraRewardTiers() {
+            return [
+                { min: 1, max: 9, title: 'WIRA MUDA', emblem: '⚔️' },
+                { min: 10, max: 19, title: 'WIRA BERANI', emblem: '🛡️' },
+                { min: 20, max: 29, title: 'WIRA PERKASA', emblem: '🔥' },
+                { min: 30, max: 39, title: 'WIRA PANTAS', emblem: '⚡' },
+                { min: 40, max: 49, title: 'WIRA BIJAKSANA', emblem: '💎' },
+                { min: 50, max: 59, title: 'WIRA GAGAH', emblem: '🦁' },
+                { min: 60, max: 69, title: 'WIRA AGUNG', emblem: '👑' },
+                { min: 70, max: 79, title: 'WIRA LEGENDA', emblem: '🌟' },
+                { min: 80, max: 89, title: 'WIRA EPIK', emblem: '🐉' },
+                { min: 90, max: 99, title: 'WIRA TERTINGGI', emblem: '🏆' },
+                { min: 100, max: 100, title: 'MASTER WIRA MATEMATIK', emblem: '👑' }
+            ];
+        }
+
+        function openRewards() {
+            toggleHeader(false);
+            const view = document.getElementById('app-view');
+            const currentLevel = Math.max(1, Number(gameState.level) || 1);
+            const tiers = getWiraRewardTiers();
+
+            view.innerHTML = `
+                <div class="flex flex-col h-full pop-animation">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <h2 class="font-display text-sm sm:text-base font-bold text-white">🏆 Koleksi Gelaran Wira</h2>
+                            <p class="text-[10px] text-cyan-200 mt-0.5">TAHUN ${currentYear} • LEVEL ${currentLevel}</p>
+                        </div>
+                        <button onclick="renderMainMenu()" class="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:via-blue-500 hover:to-indigo-500 text-white font-display text-xs px-3 py-2 rounded-xl font-extrabold border border-cyan-300/50 shadow-[0_0_14px_rgba(34,211,238,0.45)] transition transform hover:scale-[1.02] active:scale-95">🏠 Menu</button>
+                    </div>
+
+                    <div class="space-y-2 flex-1 overflow-y-auto pr-1 text-xs">
+                        ${tiers.map(t => renderWiraRewardCard(t, currentLevel)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderWiraRewardCard(tier, currentLevel) {
+            const unlocked = currentLevel >= tier.min;
+            const current = currentLevel >= tier.min && currentLevel <= tier.max;
+            const rangeText = tier.min === tier.max ? `LEVEL ${tier.min}` : `LEVEL ${tier.min}–${tier.max}`;
+            return `
+                <div class="p-2.5 rounded-2xl border flex items-center justify-between shadow ${unlocked ? 'bg-amber-950/40 border-amber-500/50 text-amber-200' : 'bg-slate-950/40 border-slate-800 text-slate-500'} ${current ? 'ring-2 ring-cyan-400/60' : ''}">
+                    <div class="flex items-center gap-2">
+                        <div class="text-2xl ${unlocked ? '' : 'grayscale opacity-40'} ${tier.min >= 20 ? 'wira-future-blink' : ''}">${tier.emblem}</div>
+                        <div>
+                            <h4 class="font-display font-bold text-xs ${unlocked ? 'text-white' : 'text-slate-500'} ${tier.min >= 20 ? 'wira-future-blink' : ''}">${tier.title}</h4>
+                            <p class="text-[10px]">${rangeText}${current ? ' • SEDANG AKTIF' : ''}</p>
+                        </div>
+                    </div>
+                    <span class="font-bold text-[11px]">${unlocked ? '✅ Diperoleh' : '🔒 Terkunci'}</span>
+                </div>
+            `;
+        }
+
+        function renderRewardCard(title, desc, unlocked) {
+            return `
+                <div class="p-2.5 rounded-2xl border flex items-center justify-between shadow ${unlocked ? 'bg-amber-950/40 border-amber-500/50 text-amber-200' : 'bg-slate-950/40 border-slate-800 text-slate-500'}">
+                    <div>
+                        <h4 class="font-display font-bold text-xs text-white">${title}</h4>
+                        <p class="text-[10px]">${desc}</p>
+                    </div>
+                    <span class="font-bold text-[11px]">${unlocked ? '✅ Diperoleh' : '🔒 Terkunci'}</span>
+                </div>
+            `;
+        }
+
+        function openStats() {
+            toggleHeader(false);
+            const view = document.getElementById('app-view');
+            view.innerHTML = `
+                <div class="flex flex-col h-full pop-animation">
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="font-display text-sm sm:text-base font-bold text-white">📊 Statistik Prestasi</h2>
+                        <button onclick="renderMainMenu()" class="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:via-blue-500 hover:to-indigo-500 text-white font-display text-xs px-3 py-2 rounded-xl font-extrabold border border-cyan-300/50 shadow-[0_0_14px_rgba(34,211,238,0.45)] transition transform hover:scale-[1.02] active:scale-95">🏠 Menu</button>
+                    </div>
+
+                    <div class="space-y-2.5 flex-1 overflow-y-auto pr-1 text-xs font-bold">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="bg-slate-950/60 p-2.5 rounded-2xl border border-indigo-500/30 text-center">
+                                <span class="block mb-0.5 text-slate-400 text-[10px]">⭐ Skor Keseluruhan</span>
+                                <p class="text-base text-accent">${gameState.score}</p>
+                            </div>
+                            <div class="bg-slate-950/60 p-2.5 rounded-2xl border border-indigo-500/30 text-center">
+                                <span class="block mb-0.5 text-slate-400 text-[10px]">🔥 Streak Tertinggi</span>
+                                <p class="text-base text-orange-400">${gameState.maxStreak}</p>
+                            </div>
+                            <div class="bg-slate-950/60 p-2.5 rounded-2xl border border-indigo-500/30 text-center">
+                                <span class="block mb-0.5 text-slate-400 text-slate-400 text-[10px]">✅ Jawapan Betul</span>
+                                <p class="text-base text-emerald-400">${gameState.correctCount}</p>
+                            </div>
+                            <div class="bg-slate-950/60 p-3 rounded-2xl border border-indigo-500/30 text-center">
+                                <span class="block mb-0.5 text-slate-400 text-[10px]">❌ Jawapan Salah</span>
+                                <p class="text-base text-red-400">${gameState.wrongCount}</p>
+                            </div>
+                            <div class="bg-slate-950/60 p-2.5 rounded-2xl border border-indigo-500/30 text-center"><span class="block mb-0.5 text-slate-400 text-[10px]">🪙 Coin</span><p class="text-base text-amber-300">${gameState.coins || 0}</p></div>
+                            <div class="bg-slate-950/60 p-2.5 rounded-2xl border border-indigo-500/30 text-center"><span class="block mb-0.5 text-slate-400 text-[10px]">⚔️ Level Wira</span><p class="text-base text-cyan-300">${gameState.level || 1}</p></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function resetData() {
+            showModal("Tetapkan Semula?", "Adakah anda pasti mahu memadam semua rekod dan skor?", "⚠️", "Ya, Reset", () => {
+                localStorage.removeItem(SAVE_KEY);
+                gameState = { score: 0, streak: 0, maxStreak: 0, correctCount: 0, wrongCount: 0, lives: 3, coins: 0, xp: 0, level: 1, progressByYear: { 1: defaultYearProgress(), 2: defaultYearProgress(), 3: defaultYearProgress() }, soundEnabled: true, achievements: { firstMission: false, streak5: false, correct10: false, levelUp: false }, rewards: { pejuangTambah: false, masterCarry: false, wiraMatematik: false, masterLazim: false } };
+                renderMainMenu();
+            });
+        }
+
+        window.onload = function() {
+            loadGame();
+            renderMainMenu();
+        };
+    </script>
+</body>
+</html>
