@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematik Tahun 3 — Tambah & Tolak</title>
+<style>
+:root{--navy:#14213d;--blue:#2563eb;--blue2:#dbeafe;--gold:#fbbf24;--green:#15803d;--greenbg:#dcfce7;--red:#b91c1c;--redbg:#fee2e2;--ink:#172033;--muted:#64748b;--line:#e2e8f0;--bg:#f4f7fb;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
+header{background:linear-gradient(120deg,#14213d,#1d4ed8);color:white;padding:22px 16px}header .wrap,main{max-width:1050px;margin:auto}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:14px;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-size:25px;font-weight:900}
+h1{font-size:clamp(21px,4vw,30px);margin:0}header p{margin:5px 0 0;color:#dbeafe}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}button,.tab{border:0;border-radius:12px;padding:11px 15px;font-weight:750;cursor:pointer;font-size:14px}
+nav button{background:#ffffff1a;color:white;border:1px solid #ffffff35}nav button.active{background:white;color:var(--navy)}
+main{padding:22px 14px 42px}.panel{background:white;border:1px solid var(--line);border-radius:20px;padding:clamp(16px,3vw,25px);box-shadow:0 8px 25px #14213d0b;margin-bottom:18px}
+.hidden{display:none!important}.eyebrow{text-transform:uppercase;font-size:11px;letter-spacing:1.3px;font-weight:850;color:var(--blue)}
+h2{margin:5px 0 8px;font-size:23px}h3{margin:0 0 10px;font-size:17px}.muted{color:var(--muted);font-size:14px;line-height:1.5}
+label{display:block;font-size:13px;font-weight:750;margin:12px 0 6px}input,select{width:100%;padding:12px 13px;border:1px solid #cbd5e1;border-radius:11px;font:inherit;background:white;color:var(--ink)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.btn-primary{background:var(--blue);color:white}.btn-dark{background:var(--navy);color:white}.btn-light{background:#eaf0f8;color:var(--navy)}.btn-gold{background:var(--gold);color:var(--navy)}button:disabled{opacity:.45;cursor:not-allowed}
+.callout{background:#eff6ff;border:1px solid #bfdbfe;padding:13px;border-radius:12px;color:#1e40af;font-size:13px;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:15px 0}.stat{border:1px solid var(--line);border-radius:15px;padding:15px;background:white}.stat small{display:block;color:var(--muted);font-weight:700}.stat strong{display:block;font-size:25px;margin-top:5px}
+.question-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.progress{height:8px;background:#e2e8f0;border-radius:20px;overflow:hidden;margin:13px 0 22px}.progress div{height:100%;background:var(--blue);width:0;transition:width .2s}
+.problem{background:#f8fafc;border:1px solid var(--line);border-radius:18px;padding:24px 12px;text-align:center;margin:18px 0}.problem .expression{font-size:clamp(32px,8vw,48px);font-weight:900;letter-spacing:1px}.answer-row{display:flex;gap:9px;max-width:420px;margin:0 auto}.answer-row input{text-align:center;font-size:24px;font-weight:800}.answer-row button{white-space:nowrap}
+.feedback{margin-top:13px;padding:12px;border-radius:12px;font-weight:750}.correct{background:var(--greenbg);color:var(--green)}.wrong{background:var(--redbg);color:var(--red)}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:11px 9px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f8fafc;color:#475569;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}.pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800}.pill.green{background:var(--greenbg);color:var(--green)}.pill.red{background:var(--redbg);color:var(--red)}.pill.blue{background:var(--blue2);color:#1d4ed8}
+.bar{height:8px;background:#e2e8f0;border-radius:20px;overflow:hidden;min-width:70px}.bar span{display:block;height:100%;background:var(--blue)}
+.result-big{text-align:center;padding:20px}.result-big strong{font-size:42px;display:block;color:var(--blue)}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:2px 10px 2px}
+@media(max-width:650px){.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{border-radius:16px}th,td{padding:9px 7px}}
+
+/* Bentuk lazim berpetak: ruang bawa di atas nombor, tanda operasi di kiri */
+.work-wrap{max-width:420px;margin:18px auto 8px}
+.work-caption{font-size:12px;color:var(--muted);text-align:center;margin-bottom:8px}
+.column-heads,.carry-row,.number-row,.answer-row-grid{display:grid;grid-template-columns:34px repeat(4,minmax(0,1fr));gap:3px}
+.column-heads span{text-align:center;font-size:11px;font-weight:800;color:#475569;padding:5px 0}
+.carry-row,.number-row{margin-bottom:3px}
+.digit-cell{height:48px;border:1.5px solid #93a4ba;border-radius:3px;background:white;display:grid;place-items:center;font-size:25px;font-weight:850;min-width:0}
+.digit-cell.blank{background:#fff;color:#cbd5e1}
+.digit-cell.carry{border:1.5px dashed #2563eb;background:#eff6ff;font-size:20px}.digit-cell.borrowed{background:#fff7ed;border-color:#f97316}.borrow-mark{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.02;font-size:19px}.borrow-mark s{font-size:12px;color:#dc2626}.borrow-mark strong{color:#15803d}.borrow-ones{font-size:20px;color:#15803d}
+.digit-cell.opcell{border:1.5px solid transparent;background:transparent;font-size:26px;color:#172033}
+.answer-row-grid .answer-spacer{height:48px}
+.answer-row-grid input{width:100%;height:48px;border:1.5px solid #2563eb;border-radius:3px;text-align:center;font-size:25px;font-weight:850;padding:0;min-width:0}
+.answer-row-grid input:focus{outline:3px solid #bfdbfe}
+.answer-row-grid input:disabled{background:#f1f5f9;color:#172033;border-color:#cbd5e1}.answer-row-grid input.answer-locked:disabled{background:#e2e8f0;border:1.5px dashed #94a3b8;opacity:.55}
+.worksheet-note{max-width:420px;margin:10px auto 0;font-size:12px;color:var(--muted);text-align:center}
+@media(max-width:420px){.work-wrap{max-width:100%}.column-heads,.carry-row,.number-row,.answer-row-grid{grid-template-columns:25px repeat(4,minmax(0,1fr));gap:2px}.digit-cell,.answer-row-grid input,.answer-row-grid .answer-spacer{height:43px;font-size:22px}.column-heads span{font-size:10px}}
+
+.finish-modal{position:fixed;inset:0;z-index:10000;background:#0f172acc;display:flex;align-items:center;justify-content:center;padding:16px}
+.finish-card{width:min(520px,100%);background:#fff;border-radius:22px;padding:22px;box-shadow:0 24px 80px #0005;max-height:92vh;overflow:auto}
+.finish-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+.finish-choice{border:1px solid var(--line);background:#f8fafc;color:var(--ink);border-radius:14px;padding:15px 12px;text-align:left;display:flex;gap:10px;align-items:center}
+.finish-choice strong{display:block}.finish-choice small{display:block;color:var(--muted);font-weight:500;margin-top:4px;line-height:1.4}
+.certificate{background:linear-gradient(135deg,#fffbeb,#fff 52%,#eff6ff);border:5px double #d4a72c;border-radius:16px;padding:22px 15px;text-align:center;color:#14213d}
+.certificate .cert-mark{font-size:36px}.certificate h2{font-family:Georgia,serif;color:#1d4ed8;margin:8px 0}.certificate .cert-name{font-size:25px;font-weight:900;margin:12px 0;color:#14213d;overflow-wrap:anywhere}.certificate .cert-score{font-size:22px;font-weight:900;color:#166534}.certificate .cert-meta{font-size:12px;color:#475569;margin-top:10px}
+@media(max-width:440px){.finish-choices{grid-template-columns:1fr}.finish-card{padding:16px}.certificate{padding:16px 10px}}
+
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand"><div class="logo">±</div><div><h1>Matematik Tahun 3</h1><p>Permainan Interaktif • Tambah & Tolak</p></div></div>
+  <nav>
+    <button id="tabStudent" class="active" onclick="showStudentResults()">📊 Paparan Hasil Murid</button>
+    <button id="tabTeacher" onclick="requestTeacherAccess()">👩‍🏫 Saya Guru</button>
+  </nav>
+</div></header>
+<main>
+<section id="studentView">
+  <div id="loginPanel" class="panel">
+    <div class="eyebrow">Misi Matematik</div><h2>Jom jawab 10 soalan!</h2>
+    <p class="muted">Satu set mengandungi 5 soalan Tambah dan 5 soalan Tolak. Soalan Tambah merangkumi latihan biasa dan pengumpulan semula; semua soalan Tolak ialah tolak biasa tanpa pengumpulan semula.</p>
+    <div class="grid2">
+      <div><label for="studentName">Nama murid</label><input id="studentName" placeholder="Masukkan nama penuh murid" maxlength="80"></div>
+      <div><label for="studentClass">Pilih kelas</label><select id="studentClass"><option value="">— Pilih kelas —</option><option>3 Inovatif</option><option>3 Proaktif</option><option>3 Kritis</option><option>3 Kreatif</option><option>3 Patriotik</option></select></div>
+    </div>
+    <div class="callout" style="margin-top:15px">Tahun ditetapkan kepada <b>Tahun 3</b>. Sila pilih kelas yang betul supaya rekod prestasi dapat diasingkan dengan tepat.</div>
+    <button class="btn-primary" style="width:100%;margin-top:16px" onclick="startGame()">MULA PERMAINAN →</button>
+    <button class="btn-light" style="width:100%;margin-top:10px" onclick="shareLatestToTeacher()">📤 SHARE KEPADA GURU</button>
+    <p class="muted" style="font-size:12px;margin-top:7px">Selesaikan permainan dahulu untuk berkongsi laporan. Butang ini tidak membuka Desktop Guru.</p>
+  </div>
+  <div id="gamePanel" class="panel hidden">
+    <div class="question-top"><div><div class="eyebrow" id="studentBadge">Tahun 3</div><h2 id="questionHeading">Soalan 1 daripada 10</h2></div><span class="pill blue" id="operationPill">TAMBAH</span></div>
+    <div class="progress"><div id="progressBar"></div></div>
+    <div class="problem"><div class="muted" id="skillLabel">Tanpa pengumpulan semula</div>
+      <div class="work-wrap">
+        <div class="work-caption">BENTUK LAZIM • MASUKKAN 10 UNTUK MEMINJAM DALAM OPERASI TOLAK</div>
+        <div class="column-heads"><span></span><span>Ribu</span><span>Ratus</span><span>Puluh</span><span>Sa</span></div>
+        <div class="carry-row" id="carryCells"></div>
+        <div class="number-row" id="topNumberCells"></div>
+        <div class="number-row" id="bottomNumberCells"></div>
+        <div class="answer-row-grid" id="answerCells"></div>
+      </div>
+      <div class="worksheet-note">Isi jawapan bermula dari rumah SA (kanan). Masukkan satu digit untuk membuka petak seterusnya di sebelah kiri. Teruskan hingga rumah ribu; masukkan 0 jika tiada digit ribu.</div>
+    </div>
+    <div class="answer-row"><button id="answerButton" class="btn-primary" onclick="checkAnswer()">Semak jawapan</button></div>
+    <div id="feedback" class="hidden"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap"><span class="muted" id="scoreLive">Betul: 0 • Salah: 0</span><button id="nextButton" class="btn-dark hidden" onclick="nextQuestion()">Soalan seterusnya →</button></div>
+  </div>
+  <div id="resultPanel" class="panel hidden">
+    <div class="eyebrow">Misi selesai</div><h2>Syabas, <span id="resultName"></span>!</h2>
+    <div class="result-big"><strong id="resultScore">0/10</strong><span class="muted">Markah keseluruhan</span></div>
+    <div class="stats" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <div class="stat"><small>Jawapan betul</small><strong id="resultCorrect">0</strong></div>
+      <div class="stat"><small>Jawapan salah</small><strong id="resultWrong">0</strong></div>
+    </div>
+    <p class="muted" style="text-align:center">Laporan terperinci dihantar kepada guru apabila anda menekan butang di bawah.</p>
+    <button class="btn-primary" style="width:100%;margin-top:12px" data-result-action="share" onclick="shareResultDirect()">📤 SHARE KEPADA GURU</button>
+    <button class="btn-light" style="width:100%;margin-top:10px" data-result-action="certificate" onclick="openResultPreview()">🏅 Lihat sijil ringkas</button>
+    <button class="btn-light" style="width:100%;margin-top:10px" onclick="resetGame()">Kembali ke halaman mula</button>
+  </div>
+</section>
+<section id="teacherView" class="hidden">
+  <div class="panel">
+    <div class="eyebrow">Kegunaan guru</div><h2>Dashboard Pemantauan Prestasi</h2>
+    <p class="muted">Tapis kelas, lihat markah murid, semak jawapan satu demi satu dan kenal pasti kemahiran yang perlu diberi intervensi.</p>
+    <div class="callout"><b>Nota prototaip:</b> rekod sekarang disimpan pada pelayar/peranti yang digunakan. Untuk menerima rekod daripada telefon murid yang berbeza, sistem ini perlu disambungkan kepada pangkalan data dalam talian dan dashboard guru perlu dilindungi dengan akses guru.</div>
+    <div class="grid2" style="margin-top:15px">
+      <div><label for="filterClass">Tapis kelas</label><select id="filterClass" onchange="renderDashboard()"><option value="">Semua kelas</option><option>3 Inovatif</option><option>3 Proaktif</option><option>3 Kritis</option><option>3 Kreatif</option><option>3 Patriotik</option></select></div>
+      <div><label for="filterName">Cari nama murid</label><input id="filterName" placeholder="Taip nama murid..." oninput="renderDashboard()"></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><small>Jumlah percubaan</small><strong id="dashAttempts">0</strong></div>
+      <div class="stat"><small>Murid unik</small><strong id="dashStudents">0</strong></div>
+      <div class="stat"><small>Purata markah</small><strong id="dashAverage">—</strong></div>
+      <div class="stat"><small>Purata betul</small><strong id="dashCorrect">—</strong></div>
+    </div>
+    <div class="grid3">
+      <div class="stat"><small>Tambah: betul / dijawab</small><strong id="dashAdd">—</strong></div>
+      <div class="stat"><small>Tolak: betul / dijawab</small><strong id="dashSub">—</strong></div>
+      <div class="stat"><small>Pengumpulan semula: betul / dijawab</small><strong id="dashRegroup">—</strong></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0"><button class="btn-light" onclick="exportCSV()">Muat turun rekod CSV</button><button class="btn-light" onclick="loadDemo()">Lihat contoh rekod</button><button class="btn-light" onclick="clearRecords()">Padam rekod peranti ini</button></div>
+    <h3>Rekod percubaan murid</h3><div id="attemptTable" class="table-wrap"></div>
+    <p class="muted" style="margin-top:12px">Pilih butang “Lihat butiran” untuk menyemak setiap soalan: operasi, pengumpulan semula, jawapan murid, jawapan betul dan status betul/salah.</p>
+    <div id="detailPanel" class="hidden" style="margin-top:18px"><h3 id="detailHeading">Butiran percubaan</h3><div id="detailTable" class="table-wrap"></div></div>
+  </div>
+</section>
+
+<div id="passwordModal" class="hidden" style="position:fixed;inset:0;z-index:9999;background:#0f172acc;align-items:center;justify-content:center;padding:18px">
+  <div class="panel" style="width:min(420px,100%);margin:0;box-shadow:0 25px 80px #0005">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div class="logo">🔒</div><div><div class="eyebrow">Akses terhad</div><h2 style="margin:3px 0">Desktop Guru</h2></div></div>
+    <p class="muted">Masukkan kata laluan untuk membuka dashboard guru.</p>
+    <form onsubmit="event.preventDefault();verifyTeacherPassword()">
+      <label for="teacherPassword">Kata laluan</label>
+      <input id="teacherPassword" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Masukkan kata laluan" maxlength="20">
+      <div id="passwordError" class="hidden" style="color:#b91c1c;font-size:13px;margin-top:8px">Kata laluan tidak betul. Cuba lagi.</div>
+      <div style="display:flex;gap:8px;margin-top:16px"><button type="button" class="btn-light" style="flex:1" onclick="closePasswordModal()">Batal</button><button type="submit" class="btn-primary" style="flex:1">Masuk</button></div>
+    </form>
+    <p class="muted" style="font-size:11px;margin-top:14px">Nota: kunci ini ialah perlindungan asas pada halaman prototaip, bukan keselamatan pelayan.</p>
+  </div>
+</div>
+
+<div id="finishShareModal" class="finish-modal hidden" role="dialog" aria-modal="true" aria-labelledby="finishTitle">
+  <div class="finish-card">
+    <div style="text-align:center"><div style="font-size:44px">🎉🏆</div><div class="eyebrow">Misi selesai</div>
+      <h2 id="finishTitle">Tahniah! Anda telah selesaikan 10 soalan.</h2>
+      <p class="muted" id="finishSummary">Keputusan anda sudah siap.</p>
+    </div>
+    <div class="finish-choices">
+      <button class="finish-choice" data-result-action="share" onclick="shareResultDirect()"><span style="font-size:25px">📤</span><span><strong>Share kepada Guru</strong><small>Hantar laporan lengkap soalan dan jawapan kepada guru.</small></span></button>
+      <button class="finish-choice" data-result-action="certificate" onclick="openResultPreview()"><span style="font-size:25px">🏅</span><span><strong>Lihat sijil ringkas</strong><small>Paparan markah dan peratus pencapaian sahaja.</small></span></button>
+    </div>
+    <p class="muted" style="font-size:12px;text-align:center;margin:14px 0 0">Laporan penuh hanya dikongsi melalui aplikasi yang anda pilih. Pilih akaun atau nombor guru sebagai penerima.</p>
+    <button class="btn-light" style="width:100%;margin-top:12px" onclick="closeFinishShare()">Tutup</button>
+  </div>
+</div>
+<div id="resultPreviewModal" class="finish-modal hidden" role="dialog" aria-modal="true" aria-labelledby="previewTitle">
+  <div class="finish-card">
+    <div class="question-top" style="margin-bottom:14px"><h2 id="previewTitle">Hasil permainan</h2><button class="btn-light" onclick="closeResultPreview()">Kembali</button></div>
+    <div id="certificatePreview" class="certificate"></div>
+    <div class="finish-choices">
+      <button class="finish-choice" data-result-action="share" onclick="shareResultDirect()"><span style="font-size:25px">📤</span><span><strong>Share kepada Guru</strong><small>Hantar laporan penuh kepada guru.</small></span></button>
+      <button class="finish-choice" onclick="downloadCertificate()"><span style="font-size:25px">⬇️</span><span><strong>Simpan sijil</strong><small>Simpan paparan ringkas keputusan sendiri.</small></span></button>
+    </div>
+    <button class="btn-primary" style="width:100%;margin-top:12px" onclick="closeResultPreview()">Selesai</button>
+  </div>
+</div>
+<footer style="padding:0 10px 0;color:#64748b;font-size:12px;line-height:1">Dihasilkan oleh © Sifu-Deen + ChatGPT<br><span style="display:block;margin-top:0">Matematik Tahun 3 • Tambah dan Tolak</span></footer>
+</main>
+<script>
+let latestFinishedAttempt=null;
+function openFinishShare(attempt){latestFinishedAttempt=attempt;window.latestFinishedAttempt=attempt;try{localStorage.setItem('mathT3LatestFinishedAttempt',JSON.stringify(attempt))}catch(e){}$('finishSummary').textContent=`${attempt.name} • ${attempt.cls} • Markah ${attempt.score}/10`;$('finishShareModal').classList.remove('hidden')}
+function closeFinishShare(){$('finishShareModal').classList.add('hidden')}
+function ensureLatestFinishedAttempt(){
+  if(!latestFinishedAttempt){try{const el=document.querySelector('[data-result-action][data-attempt]');if(el){const cached=JSON.parse(el.dataset.attempt);if(cached&&cached.answers&&cached.answers.length){latestFinishedAttempt=cached;window.latestFinishedAttempt=cached;return cached;}}}catch(e){}}
+  if(window.latestFinishedAttempt && window.latestFinishedAttempt.answers && window.latestFinishedAttempt.answers.length){latestFinishedAttempt=window.latestFinishedAttempt;return latestFinishedAttempt;}
+  if(latestFinishedAttempt && latestFinishedAttempt.answers && latestFinishedAttempt.answers.length) return latestFinishedAttempt;
+  try{
+    const saved=localStorage.getItem('mathT3LatestFinishedAttempt');
+    if(saved){const parsed=JSON.parse(saved);if(parsed && parsed.answers && parsed.answers.length){latestFinishedAttempt=parsed;return parsed;}}
+    const records=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+    if(Array.isArray(records)&&records.length){const last=records[0];if(last && last.answers && last.answers.length){latestFinishedAttempt=last;localStorage.setItem('mathT3LatestFinishedAttempt',JSON.stringify(last));return last;}}
+  }catch(e){}
+  return null;
+}
+
+function openResultPreview(){let attempt=ensureLatestFinishedAttempt();if(!attempt){alert('Keputusan belum tersedia. Sila selesaikan 10 soalan dahulu.');return}let x=attempt;$('certificatePreview').innerHTML=`<div class="cert-mark">🏆</div><div style="font-size:12px;letter-spacing:2px;font-weight:900">PAPARAN HASIL MATEMATIK</div><h2>TAHNIAH!</h2><p>Syabas kepada</p><div class="cert-name">${esc(x.name)}</div><p>kerana telah menyelesaikan 10 soalan Matematik Tahun 3</p><div class="cert-score">${x.score}/10 MARKAH</div><p style="margin:8px 0 0;font-weight:800">Tambah &amp; Tolak</p><div class="cert-meta">Kelas: ${esc(x.cls)}<br>Pencapaian: ${Math.round(x.score*10)}%<br>Teruskan usaha anda!</div>`;$('finishShareModal').classList.add('hidden');$('resultPreviewModal').classList.remove('hidden')}
+function closeResultPreview(){$('resultPreviewModal').classList.add('hidden')}
+function resultShareText(){if(!latestFinishedAttempt)return '';let x=latestFinishedAttempt;let detail=x.answers.map((a,i)=>`${i+1}. ${a.a} ${a.op} ${a.b} = ${a.userAnswer ?? 'Tiada jawapan'} | Operasi: ${a.op==='+'?'Tambah':'Tolak'} | ${a.regroup?'Dengan pengumpulan semula':'Tanpa pengumpulan semula'} | Jawapan betul: ${a.answer} | ${a.correct?'BETUL':'SALAH'}`).join('\n');return `LAPORAN PENUH MURID — MATEMATIK TAHUN 3\nNama: ${x.name}\nKelas: ${x.cls}\nTarikh: ${new Date(x.date).toLocaleString('ms-MY')}\nMarkah: ${x.score}/10 (${Math.round(x.score*10)}%)\nJawapan betul: ${x.score}\nJawapan salah: ${10-x.score}\n\nBUTIRAN SETIAP SOALAN\n${detail}\n\nLaporan ini dikongsi oleh murid kepada guru untuk semakan.`}
+async function shareResultDirect(){if(!ensureLatestFinishedAttempt()){alert('Keputusan belum tersedia. Sila selesaikan 10 soalan dahulu.');return}let text=resultShareText();try{if(navigator.share){await navigator.share({title:'Keputusan Matematik Tahun 3',text});return}}catch(e){if(e&&e.name==='AbortError')return}showShareChoices(text)}
+function shareLatestToTeacher(){if(!ensureLatestFinishedAttempt()){alert('Sila selesaikan 10 soalan dahulu. Selepas permainan selesai, tekan SHARE KEPADA GURU untuk menghantar laporan penuh.');return}shareResultDirect()}
+
+function showShareChoices(text){let old=$('shareFallbackModal');if(old)old.remove();let wrap=document.createElement('div');wrap.id='shareFallbackModal';wrap.className='finish-modal';wrap.innerHTML=`<div class="finish-card"><h2>Share laporan kepada guru</h2><p class="muted">Pilih aplikasi, kemudian pilih guru sebagai penerima. Laporan penuh akan disertakan.</p><div class="finish-choices"><button class="finish-choice" onclick="openShareUrl('https://wa.me/?text='+encodeURIComponent(window._shareText))"><span style="font-size:25px">🟢</span><span><strong>WhatsApp</strong><small>Kongsi keputusan</small></span></button><button class="finish-choice" onclick="openShareUrl('https://t.me/share/url?url=&text='+encodeURIComponent(window._shareText))"><span style="font-size:25px">🔵</span><span><strong>Telegram</strong><small>Kongsi keputusan</small></span></button><button class="finish-choice" onclick="copyShareText()"><span style="font-size:25px">📋</span><span><strong>Salin teks</strong><small>Tampal dalam aplikasi lain</small></span></button><button class="finish-choice" onclick="emailShare()"><span style="font-size:25px">✉️</span><span><strong>E-mel</strong><small>Kongsi melalui e-mel</small></span></button></div><button class="btn-light" style="width:100%;margin-top:12px" onclick="document.getElementById('shareFallbackModal').remove()">Tutup</button></div>`;window._shareText=text;document.body.appendChild(wrap)}
+function openShareUrl(url){window.open(url,'_blank','noopener')}
+async function copyShareText(){try{await navigator.clipboard.writeText(window._shareText);alert('Keputusan disalin. Tampal dalam aplikasi pilihan.')}catch(e){prompt('Salin teks keputusan:',window._shareText)}}
+function emailShare(){location.href='mailto:?subject='+encodeURIComponent('Keputusan Matematik Tahun 3')+'&body='+encodeURIComponent(window._shareText)}
+function downloadCertificate(){if(!latestFinishedAttempt){alert('Keputusan belum tersedia.');return}let x=latestFinishedAttempt;let doc=`<!doctype html><html lang="ms"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hasil Matematik Tahun 3</title><body style="font-family:Arial,sans-serif;background:#f8fafc;padding:24px"><div style="max-width:650px;margin:30px auto;background:linear-gradient(135deg,#fffbeb,#fff 52%,#eff6ff);border:8px double #d4a72c;border-radius:20px;padding:35px 20px;text-align:center;color:#14213d"><div style="font-size:50px">🏆</div><p style="letter-spacing:3px;font-weight:bold">PAPARAN HASIL MATEMATIK</p><h1 style="color:#1d4ed8">TAHNIAH!</h1><p>Syabas kepada</p><h2>${esc(x.name)}</h2><p>kerana telah menyelesaikan 10 soalan Matematik Tahun 3</p><h2 style="color:#166534">${x.score}/10 MARKAH</h2><p>Tambah &amp; Tolak</p><p>Kelas: ${esc(x.cls)}<br>Pencapaian: ${Math.round(x.score*10)}%<br>Teruskan usaha anda!</p></div><script>window.print()<\/script></body></html>`;let blob=new Blob([doc],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Paparan_Hasil_Matematik.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+const TEACHER_PASSWORD='441398';
+let teacherUnlocked=false;
+function requestTeacherAccess(){if(teacherUnlocked){showView('teacher');return}const modal=$('passwordModal');modal.classList.remove('hidden');modal.style.display='flex';$('teacherPassword').value='';$('passwordError').classList.add('hidden');setTimeout(()=>$('teacherPassword').focus(),50)}
+function closePasswordModal(){$('passwordModal').classList.add('hidden');$('passwordModal').style.display='none';$('teacherPassword').value='';$('passwordError').classList.add('hidden')}
+function verifyTeacherPassword(){if($('teacherPassword').value===TEACHER_PASSWORD){teacherUnlocked=true;closePasswordModal();showView('teacher')}else{$('passwordError').classList.remove('hidden');$('teacherPassword').select()}}
+const STORAGE_KEY='mathT3Attempts_v1';
+let questions=[],current=0,answers=[],student={name:'',cls:''},locked=false;
+const $=id=>document.getElementById(id);
+function showView(v){$('studentView').classList.toggle('hidden',v!=='student');$('teacherView').classList.toggle('hidden',v!=='teacher');$('tabStudent').classList.toggle('active',v==='student');$('tabTeacher').classList.toggle('active',v==='teacher');if(v==='teacher')renderDashboard();}
+function showStudentResults(){
+  showView('student');
+  if(!latestFinishedAttempt){
+    $('loginPanel').classList.remove('hidden');
+    $('gamePanel').classList.add('hidden');
+    $('resultPanel').classList.add('hidden');
+    alert('Selepas menjawab 10 soalan, keputusan murid akan dipaparkan di sini.');
+    return;
+  }
+  $('loginPanel').classList.add('hidden');
+  $('gamePanel').classList.add('hidden');
+  $('resultPanel').classList.remove('hidden');
+}
+
+function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+function addQuestion(regroup){
+  for(let tries=0;tries<8000;tries++){
+    let a=rand(1001,7999), b=rand(1001,9999-a);
+    if(b<1001) continue;
+    let onesCarry=(a%10)+(b%10)>=10;
+    let tensCarry=(Math.floor(a/10)%10)+(Math.floor(b/10)%10)+(onesCarry?1:0)>=10;
+    let hundredsCarry=(Math.floor(a/100)%10)+(Math.floor(b/100)%10)+(tensCarry?1:0)>=10;
+    let hasCarry=onesCarry||tensCarry||hundredsCarry;
+    if(hasCarry===regroup) return {a,b,op:'+',regroup,answer:a+b};
+  }
+  return regroup ? {a:2486,b:1758,op:'+',regroup:true,answer:4244}
+                 : {a:2431,b:1252,op:'+',regroup:false,answer:3683};
+}
+function subQuestion(regroup){
+  // Untuk Tahun 3: semua soalan tolak empat digit tanpa pengumpulan semula.
+  // Pastikan setiap digit nombor atas >= digit nombor bawah pada nilai tempat yang sama.
+  for(let tries=0;tries<12000;tries++){
+    let a=rand(2000,9999), b=rand(1000,a-1);
+    let da=String(a).padStart(4,'0').split('').map(Number);
+    let db=String(b).padStart(4,'0').split('').map(Number);
+    const noBorrow=da.every((d,i)=>d>=db[i]);
+    if(noBorrow) return {a,b,op:'−',regroup:false,answer:a-b};
+  }
+  return {a:7654,b:1232,op:'−',regroup:false,answer:6422};
+}
+function startGame(){let name=$('studentName').value.trim(),cls=$('studentClass').value;if(!name||!cls){alert('Sila masukkan nama dan pilih kelas dahulu.');return}student={name,cls};let q=[addQuestion(false),addQuestion(false),addQuestion(false),addQuestion(true),addQuestion(true),subQuestion(false),subQuestion(false),subQuestion(false),subQuestion(true),subQuestion(true)];questions=q.sort(()=>Math.random()-.5);current=0;answers=[];$('loginPanel').classList.add('hidden');$('resultPanel').classList.add('hidden');$('gamePanel').classList.remove('hidden');showQuestion()}
+function digits3(n){return String(n).padStart(4,' ').slice(-4).split('')}
+function makeCellRow(id,digits,op='',carry=false){let target=$(id);target.innerHTML='';let lead=document.createElement('div');lead.className='digit-cell opcell';lead.textContent=op;target.appendChild(lead);digits.forEach((d,i)=>{let cell;if(carry){cell=document.createElement('input');cell.type='text';cell.inputMode='numeric';cell.maxLength=(i>=2?2:1);cell.autocomplete='off';cell.setAttribute('aria-label',['Digit bawa ribu','Digit bawa ratus','Nilai pinjaman rumah puluh','Nilai pinjaman rumah sa'][i]);cell.dataset.carryPlace=String(i);cell.className='digit-cell carry';cell.style.width='100%';cell.style.padding='0';cell.style.textAlign='center';cell.addEventListener('input',()=>{cell.value=cell.value.replace(/[^0-9]/g,'').slice(0,i>=2?2:1);if(questions[current]?.op==='−' && cell.value==='10'){showBorrowVisual(i);}else{clearBorrowVisual();}if(cell.value&&i<3)target.querySelectorAll('input')[i+1].focus()});cell.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!cell.value&&i>0)target.querySelectorAll('input')[i-1].focus()})}else{cell=document.createElement('div');cell.className='digit-cell'+(d===' '?' blank':'');cell.textContent=d===' '?'':d;cell.dataset.digitIndex=String(i)}target.appendChild(cell)})}
+function clearBorrowVisual(){
+  let q=questions[current];if(!q||q.op!=='−')return;
+  let top=[...$('topNumberCells').children];
+  if(top.length!==5)return;
+  let ds=digits3(q.a);
+  top.forEach((el,i)=>{
+    if(i===0)return;
+    el.classList.remove('borrowed');
+    el.textContent=ds[i-1]===' '?'':ds[i-1];
+  });
+}
+function showBorrowVisual(carryIndex=3){
+  let q=questions[current];if(!q||q.op!=='−')return;
+  let top=[...$('topNumberCells').children];if(top.length!==5)return;
+  const original=digits3(q.a).map(x=>x===' '?0:Number(x));
+  // carryIndex 2 = bantuan 10 di atas puluh; 3 = bantuan 10 di atas sa.
+  const targetDigitIndex=carryIndex;
+  let sourceDigitIndex=targetDigitIndex-1;
+  while(sourceDigitIndex>=0 && original[sourceDigitIndex]===0) sourceDigitIndex--;
+  if(sourceDigitIndex<0)return;
+
+  // Pinjaman berantai: digit bukan sifar di sebelah kiri berkurang satu;
+  // sifar yang dilalui menjadi 9. Digit penerima kekal seperti nombor asal.
+  const display=original.slice();
+  display[sourceDigitIndex]=original[sourceDigitIndex]-1;
+  for(let i=sourceDigitIndex+1;i<targetDigitIndex;i++) display[i]=9;
+
+  for(let i=0;i<4;i++){
+    const el=top[i+1];
+    el.classList.remove('borrowed');
+    if(i===sourceDigitIndex){
+      el.innerHTML=`<div class="borrow-mark"><s>${original[i]}</s><strong>${display[i]}</strong></div>`;
+      el.classList.add('borrowed');
+    }else if(i>sourceDigitIndex && i<targetDigitIndex && original[i]===0){
+      el.innerHTML=`<div class="borrow-mark"><s>0</s><strong>9</strong></div>`;
+      el.classList.add('borrowed');
+    }else{
+      el.textContent=original[i]===0 && i===0 ? '' : original[i];
+    }
+  }
+  const target=top[targetDigitIndex+1];
+  target.innerHTML='<span class="borrow-ones">10</span>';
+  target.classList.add('borrowed');
+}
+function showQuestion(){locked=false;let q=questions[current];$('questionHeading').textContent=`Soalan ${current+1} daripada 10`;$('operationPill').textContent=q.op==='+'?'TAMBAH':'TOLAK';$('skillLabel').textContent=q.regroup?'Dengan pengumpulan semula':'Tanpa pengumpulan semula';makeCellRow('carryCells',[' ',' ',' ',' '],'',true);$('carryCells').querySelectorAll('input').forEach(i=>{i.value='';i.disabled=false});makeCellRow('topNumberCells',digits3(q.a));makeCellRow('bottomNumberCells',digits3(q.b),q.op);let ans=$('answerCells');ans.innerHTML='<div class="answer-spacer"></div>';let answerInputs=[];for(let i=0;i<4;i++){let inp=document.createElement('input');inp.type='text';inp.inputMode='numeric';inp.maxLength=1;inp.autocomplete='off';inp.setAttribute('aria-label',['Ribu','Ratus','Puluh','Sa'][i]);inp.dataset.place=String(i);inp.disabled=(i!==3);inp.classList.toggle('answer-locked',i!==3);let lastValidDigit='';inp.addEventListener('input',()=>{const raw=inp.value;const cleaned=raw.replace(/[^0-9]/g,'').slice(-1);if(raw && !cleaned){inp.value=lastValidDigit;return;}inp.value=cleaned;if(cleaned)lastValidDigit=cleaned;if(cleaned){inp.disabled=false;inp.classList.remove('answer-locked');let prev=answerInputs[i-1];if(prev){prev.disabled=false;prev.classList.remove('answer-locked');prev.focus()}}else{if(!inp.value){inp.value='';}if(i===3){inp.disabled=false;inp.classList.remove('answer-locked');}else if(!answerInputs[i+1]?.value){inp.disabled=true;inp.classList.add('answer-locked');} }});inp.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!inp.value&&i<3){let next=answerInputs[i+1];if(next){next.disabled=false;next.classList.remove('answer-locked');next.focus()}}if(e.key==='Enter')checkAnswer()});answerInputs.push(inp);ans.appendChild(inp)}$('progressBar').style.width=(current/10*100)+'%';$('answerButton').disabled=false;$('feedback').className='hidden';$('nextButton').classList.add('hidden');$('scoreLive').textContent=`Betul: ${answers.filter(a=>a.correct).length} • Salah: ${answers.filter(a=>!a.correct).length}`}
+function checkAnswer(){if(locked)return;let inputs=[...$('answerCells').querySelectorAll('input')],digits=inputs.map(i=>i.value);if(digits.some(v=>v==='')){alert('Isi jawapan bermula dari rumah SA. Setiap kali satu digit dimasukkan, petak di sebelah kiri akan terbuka. Jika tiada nilai pada rumah ribu, masukkan 0.');return}locked=true;let q=questions[current],n=Number(digits.join('')),correct=n===q.answer;answers.push({...q,userAnswer:n,correct});inputs.forEach(i=>i.disabled=true);$('carryCells').querySelectorAll('input').forEach(i=>i.disabled=true);$('answerButton').disabled=true;$('feedback').className='feedback '+(correct?'correct':'wrong');$('feedback').textContent=correct?'Betul! Bagus!':'Belum tepat. Jawapan yang betul ialah '+String(q.answer).padStart(3,'0')+'.';$('scoreLive').textContent=`Betul: ${answers.filter(a=>a.correct).length} • Salah: ${answers.filter(a=>!a.correct).length}`;$('progressBar').style.width=((current+1)/10*100)+'%';$('nextButton').textContent=current===9?'Lihat keputusan →':'Soalan seterusnya →';$('nextButton').classList.remove('hidden')}
+function nextQuestion(){if(current<9){current++;showQuestion()}else finishGame()}
+function finishGame(){let correct=answers.filter(a=>a.correct).length,add=answers.filter(a=>a.op==='+'&&a.correct).length,sub=answers.filter(a=>a.op==='−'&&a.correct).length;let attempt={id:Date.now()+'-'+Math.random().toString(36).slice(2,7),name:student.name,cls:student.cls,date:new Date().toISOString(),answers,score:correct,total:10};let records=getRecords();records.unshift(attempt);saveRecords(records);latestFinishedAttempt=attempt;window.latestFinishedAttempt=attempt;try{document.querySelectorAll('[data-result-action]').forEach(el=>el.dataset.attempt=JSON.stringify(attempt))}catch(e){}$('gamePanel').classList.add('hidden');$('resultPanel').classList.remove('hidden');$('resultName').textContent=student.name;$('resultScore').textContent=correct+'/10';$('resultCorrect').textContent=correct;$('resultWrong').textContent=10-correct;$('resultAdd').textContent=add+'/5';$('resultSub').textContent=sub+'/5';$('progressBar').style.width='100%';openFinishShare(attempt)}
+function resetGame(){$('resultPanel').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('studentName').value='';$('studentClass').value='';answers=[];questions=[]}
+function getRecords(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch(e){return []}}
+function saveRecords(r){localStorage.setItem(STORAGE_KEY,JSON.stringify(r))}
+function answersTable(arr){return `<table><thead><tr><th>No.</th><th>Operasi</th><th>Jenis</th><th>Jawapan murid</th><th>Jawapan betul</th><th>Status</th></tr></thead><tbody>${arr.map((a,i)=>`<tr><td>${i+1}</td><td>${a.a} ${a.op} ${a.b}</td><td>${a.regroup?'Pengumpulan semula':'Tanpa pengumpulan semula'}</td><td>${a.userAnswer===undefined?'—':a.userAnswer}</td><td>${a.answer}</td><td><span class="pill ${a.correct?'green':'red'}">${a.correct?'Betul':'Salah'}</span></td></tr>`).join('')}</tbody></table>`}
+function renderDashboard(){let all=getRecords(),cls=$('filterClass').value,name=$('filterName').value.trim().toLowerCase();let r=all.filter(x=>(!cls||x.cls===cls)&&(!name||x.name.toLowerCase().includes(name)));$('dashAttempts').textContent=r.length;$('dashStudents').textContent=new Set(r.map(x=>x.cls+'|'+x.name.toLowerCase())).size;$('dashAverage').textContent=r.length?(r.reduce((s,x)=>s+x.score,0)/r.length).toFixed(1)+'/10':'—';let totalC=r.reduce((s,x)=>s+x.score,0);$('dashCorrect').textContent=r.length?(totalC/(r.length*10)*100).toFixed(0)+'%':'—';let sum=(fn)=>{let a=r.flatMap(x=>x.answers).filter(fn);return a.length?a.filter(x=>x.correct).length+'/'+a.length:'—'};$('dashAdd').textContent=sum(a=>a.op==='+');$('dashSub').textContent=sum(a=>a.op==='−');$('dashRegroup').textContent=sum(a=>a.regroup);$('attemptTable').innerHTML=r.length?`<table><thead><tr><th>Nama</th><th>Kelas</th><th>Tarikh / masa</th><th>Markah</th><th>Tambah betul</th><th>Tolak betul</th><th>Butiran</th></tr></thead><tbody>${r.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td>${esc(x.cls)}</td><td>${new Date(x.date).toLocaleString('ms-MY')}</td><td><b>${x.score}/10</b></td><td>${x.answers.filter(a=>a.op==='+ '||a.op==='+').filter(a=>a.correct).length}/5</td><td>${x.answers.filter(a=>a.op==='−'&&a.correct).length}/5</td><td><button class="btn-light" onclick="showDetail('${x.id}')">Lihat butiran</button></td></tr>`).join('')}</tbody></table>`:'<p class="muted" style="padding:14px">Belum ada rekod pada peranti ini. Cuba permainan dahulu atau tekan “Lihat contoh rekod”.';$('detailPanel').classList.add('hidden')}
+function showDetail(id){let x=getRecords().find(r=>r.id===id);if(!x)return;$('detailPanel').classList.remove('hidden');$('detailHeading').textContent=`Butiran: ${x.name} • ${x.cls} • ${x.score}/10`;$('detailTable').innerHTML=answersTable(x.answers);$('detailPanel').scrollIntoView({behavior:'smooth',block:'start'})}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function exportCSV(){let r=getRecords();if(!r.length){alert('Belum ada rekod untuk dimuat turun.');return}let rows=[['Nama','Kelas','Tarikh','Markah','Betul','Salah','Tambah betul','Tolak betul','Butiran jawapan']];r.forEach(x=>rows.push([x.name,x.cls,new Date(x.date).toLocaleString('ms-MY'),x.score+'/10',x.score,10-x.score,x.answers.filter(a=>a.op==='+ '||a.op==='+').filter(a=>a.correct).length,x.answers.filter(a=>a.op==='−'&&a.correct).length,x.answers.map((a,i)=>`${i+1}. ${a.a}${a.op}${a.b}; jawapan murid ${a.userAnswer}; jawapan betul ${a.answer}; ${a.correct?'Betul':'Salah'}; ${a.regroup?'Pengumpulan semula':'Tanpa pengumpulan semula'}`).join(' | ')]));let csv=rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');let blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Rekod_Prestasi_Tahun3.csv';a.click();URL.revokeObjectURL(url)}
+function clearRecords(){if(confirm('Padam semua rekod yang disimpan pada pelayar/peranti ini?')){saveRecords([]);renderDashboard()}}
+function loadDemo(){let now=Date.now();let demo=[{name:'Contoh Murid A',cls:'3 Inovatif',score:8,answers:[],id:'demo-a',date:new Date(now-3600000).toISOString()},{name:'Contoh Murid B',cls:'3 Proaktif',score:6,answers:[],id:'demo-b',date:new Date(now-1800000).toISOString()},{name:'Contoh Murid C',cls:'3 Kritis',score:9,answers:[],id:'demo-c',date:new Date(now).toISOString()}];demo.forEach((x,idx)=>{let q=[addQuestion(false),addQuestion(false),addQuestion(false),addQuestion(true),addQuestion(true),subQuestion(false),subQuestion(false),subQuestion(false),subQuestion(true),subQuestion(true)].sort(()=>Math.random()-.5);let n=x.score;x.answers=q.map((a,i)=>({...a,userAnswer:i<n?a.answer:a.answer+rand(1,3),correct:i<n}));});let existing=getRecords().filter(x=>!x.id.startsWith('demo-'));saveRecords([...demo,...existing]);renderDashboard()}
+
+renderDashboard();
+</script>
+</body>
+</html>
